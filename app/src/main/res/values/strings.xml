@@ -3,4 +3,5 @@
     <string name="home">Home</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
+    <string name="get_trending_reddit_php_url" translatable="false">http://leaguepulsereddit-env.pggnwbfn7t.us-west-1.elasticbeanstalk.com/get-trendingredditdata-json1.php</string>
 </resources>
