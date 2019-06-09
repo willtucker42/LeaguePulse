@@ -2,6 +2,7 @@ package com.example.leaguepulse;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.nfc.Tag;
 import android.os.AsyncTask;
@@ -17,7 +18,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
+import com.example.leaguepulse.data.RecyclerItem;
 import com.example.leaguepulse.data.ReturnData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -31,14 +35,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
-    private ArrayList<String> link_to_reddit = new ArrayList<>();
-    private ArrayList<String> post_titles = new ArrayList<>();
-    private ArrayList<String> self_text = new ArrayList<>();
-    private ArrayList<String> authors = new ArrayList<>();
-    private ArrayList<String> clickable_links = new ArrayList<>();
-    private ArrayList<String> dates = new ArrayList<>();
-    private ArrayList<String> trending_levels = new ArrayList<>();
-    ArrayList<ArrayList<String>> arrayLists = new ArrayList<>();
+    private ArrayList<RecyclerItem> recyclerItems = new ArrayList<>();
     RecyclerViewAdapter adapter;
     ReturnData returnData = new ReturnData();
     RecyclerView recyclerView;
@@ -50,29 +47,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         root_view = inflater.inflate(R.layout.fragment_home, container, false);
         loadData();
-        /*try {
-            if (returnData.getRedditTrendingLists().get(0) != null) {
-                post_titles.addAll(returnData.getRedditTrendingLists().get(0));
-                self_text.addAll(returnData.getRedditTrendingLists().get(1));
-                authors.addAll(returnData.getRedditTrendingLists().get(2));
-                clickable_links.addAll(returnData.getRedditTrendingLists().get(3));
-                link_to_reddit.addAll(returnData.getRedditTrendingLists().get(4));
-                dates.addAll(returnData.getRedditTrendingLists().get(5));
-                trending_levels.addAll(returnData.getRedditTrendingLists().get(6));
-            }else{
-                Log.e(TAG, "There was an issue getting data");
-            }
-        }catch (Exception e){
-            Log.e(TAG,"Catch1: "+e.toString());
-        }*/
-        post_titles.addAll(arrayLists.get(0));
-        self_text.addAll(arrayLists.get(1));
-        authors.addAll(arrayLists.get(2));
-        clickable_links.addAll(arrayLists.get(3));
-        link_to_reddit.addAll(arrayLists.get(4));
-        dates.addAll(arrayLists.get(5));
-        trending_levels.addAll(arrayLists.get(6));
-
+        recyclerView = root_view.findViewById(R.id.home_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         BindRecyclerData bindRecyclerData = new BindRecyclerData();
         bindRecyclerData.execute(root_view);
 
@@ -86,11 +62,11 @@ public class HomeFragment extends Fragment {
         SharedPreferences sharedPreferences = Objects.requireNonNull(this.getActivity()).getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("list", null);
-        Type type = new TypeToken<ArrayList<ArrayList<String>>>() {
+        Type type = new TypeToken<ArrayList<RecyclerItem>>() {
         }.getType();
-        arrayLists = gson.fromJson(json, type);
-        if (arrayLists != null) {
-            System.out.println("The list size is " + arrayLists.size());
+        recyclerItems = gson.fromJson(json, type);
+        if (recyclerItems != null) {
+            System.out.println("The list size is " + recyclerItems.size());
         } else {
             Log.e(TAG, "Array list is null");
         }
@@ -102,32 +78,11 @@ public class HomeFragment extends Fragment {
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("My title");
         //initRecyclerLists(root_view);
     }
-
-    private void initRecyclerLists(View root_view) {
-        initRecyclerView(root_view);
-    }
-
-    private void initRecyclerView(View root_view) {
-        Log.d(TAG, "initRecyclerView");
-
-        RecyclerView recyclerView = root_view.findViewById(R.id.home_recyclerview);
-        recyclerView.setAdapter(adapter);
-        adapter = new RecyclerViewAdapter(post_titles, self_text, authors,
-                clickable_links, getActivity(), link_to_reddit, dates, trending_levels);
-        System.out.println("Setting adapter");
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    }
-
-    private class BindRecyclerData extends AsyncTask<View, Void, RecyclerViewAdapter> {
+    private class BindRecyclerData extends AsyncTask<View, Integer, RecyclerViewAdapter> {
 
         @Override
         protected RecyclerViewAdapter doInBackground(View... views) {
-            View root_view = views[0];
-            recyclerView = root_view.findViewById(R.id.home_recyclerview);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            adapter = new RecyclerViewAdapter(post_titles, self_text, authors,
-                    clickable_links, getActivity(), link_to_reddit, dates, trending_levels);
+            adapter = new RecyclerViewAdapter(recyclerItems);
             return adapter;
         }
 
@@ -136,5 +91,29 @@ public class HomeFragment extends Fragment {
             System.out.println("Finished binding data");
             recyclerView.setAdapter(adapter);
         }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
     }
+
+
+    private void initRecyclerLists(View root_view) {
+        //pretty sure I dont need these: 6/8/19 delete if 2 weeks after this date
+        initRecyclerView(root_view);
+    }
+
+    private void initRecyclerView(View root_view) {
+        //pretty sure I dont need these: 6/8/19 delete if 2 weeks after this date
+        Log.d(TAG, "initRecyclerView");
+
+        RecyclerView recyclerView = root_view.findViewById(R.id.home_recyclerview);
+        recyclerView.setAdapter(adapter);
+        adapter = new RecyclerViewAdapter(recyclerItems);
+        System.out.println("Setting adapter");
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
 }

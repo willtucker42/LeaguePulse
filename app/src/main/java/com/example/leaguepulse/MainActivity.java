@@ -22,14 +22,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        System.out.println("In Main activity1");
-        System.out.println("In Main activity2");
-        //ArrayList<ArrayList<String>> list3 = (ArrayList<ArrayList<String>>) getIntent().getSerializableExtra("data");
-        System.out.println("In Main activity3");
-       /* for (ArrayList<String> item: list3 ){
-            System.out.println("Found an array List ");
-        }*/
-        System.out.println("In Main activity1");
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,

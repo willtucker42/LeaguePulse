@@ -15,32 +15,33 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.leaguepulse.data.RecyclerItem;
+
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapter";
 
-    private ArrayList<String> post_titles;
+    /*private ArrayList<String> post_titles;
     private ArrayList<String> self_texts;
     private ArrayList<String> authors;
     private ArrayList<String> dates;
     private ArrayList<String> link_to_reddit;
     private ArrayList<String> clickable_link;
-    private ArrayList<String> trending_levels;
+    private ArrayList<String> trending_levels;*/
+    private ArrayList<RecyclerItem> mRecycleritems;
     private Context context;
 
-    RecyclerViewAdapter(ArrayList<String> post_titles, ArrayList<String> self_texts,
-                        ArrayList<String> authors, ArrayList<String> clickable_link, Context context,
-                        ArrayList<String> link_to_reddit, ArrayList<String> dates,
-                        ArrayList<String> trending_levels) {
-        this.clickable_link = clickable_link;
+    RecyclerViewAdapter(ArrayList<RecyclerItem> recyclerItems) {
+        mRecycleritems = recyclerItems;
+        /*this.clickable_link = clickable_link;
         this.link_to_reddit = link_to_reddit;
         this.trending_levels = trending_levels;
         this.authors = authors;
         this.dates = dates;
         this.post_titles = post_titles;
         this.self_texts = self_texts;
-        this.context = context;
+        this.context = context;*/
     }
 
     @NonNull
@@ -54,28 +55,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int position) {
         Log.d(TAG, "onBindViewHolder: called.");
-
+        final RecyclerItem currentItem = mRecycleritems.get(position);
+        String self_text = currentItem.getmSelf_text();
         //viewHolder.author.setText(authors.get(position));
-        System.out.println("Clickable link? " + clickable_link.get(viewHolder.getAdapterPosition()));
-        if (clickable_link.get(viewHolder.getAdapterPosition()).equals("yes")) {
+       // System.out.println("Clickable link? " + clickable_link.get(viewHolder.getAdapterPosition()));
+        if (currentItem.getmClickable_link().equals("yes")) {
             //if there is a clickable link set the textview to be clickable
 
             viewHolder.self_text.setClickable(true);
             viewHolder.self_text.setMovementMethod(LinkMovementMethod.getInstance());
-            String link = "<a href='" + self_texts.get(viewHolder.getAdapterPosition()) + "'>" + self_texts.get(viewHolder.getAdapterPosition()) + " </a>";
+            String link = "<a href='" + self_text + "'>" + self_text + " </a>";
             viewHolder.self_text.setText((Html.fromHtml(link)));
         } else {
-            viewHolder.self_text.setText(self_texts.get(viewHolder.getAdapterPosition()));
+            viewHolder.self_text.setText(self_text);
         }
-        viewHolder.date_text.setText(dates.get(viewHolder.getAdapterPosition()));
-        viewHolder.trending_level.setText(trending_levels.get(viewHolder.getAdapterPosition()));
-        viewHolder.post_title.setText(post_titles.get(viewHolder.getAdapterPosition()));
+        viewHolder.date_text.setText(currentItem.getmDate());
+        viewHolder.trending_level.setText(currentItem.getmTrending_level());
+        viewHolder.post_title.setText(currentItem.getmPost_title());
         viewHolder.goto_reddit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String link = "https://www.reddit.com" + link_to_reddit.get(viewHolder.getAdapterPosition());
+                String link = "https://www.reddit.com" + currentItem.getmLink_to_reddit();
                 Uri uri = Uri.parse(link); // missing 'http://' will cause crashed
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 context.startActivity(intent);
@@ -84,14 +86,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         viewHolder.parent_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: clicked on: " + post_titles.get(viewHolder.getAdapterPosition()));
+                Log.d(TAG, "onClick: clicked on: " + currentItem.getmPost_title());
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return post_titles.size();
+        return mRecycleritems.size();
     }
 
 

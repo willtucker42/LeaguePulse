@@ -8,10 +8,10 @@
     tools:context=".SplashActivity">
 
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/spinner"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        app:indicatorName="PacmanIndicator" />
 </RelativeLayout>

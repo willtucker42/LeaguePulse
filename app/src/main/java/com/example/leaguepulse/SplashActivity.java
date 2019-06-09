@@ -3,11 +3,13 @@ package com.example.leaguepulse;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.leaguepulse.data.RecyclerItem;
 import com.example.leaguepulse.data.RedditPHP;
 import com.example.leaguepulse.data.redditdata.datamodel.Post;
 import com.google.gson.Gson;
@@ -35,15 +37,21 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        ArrayList<ArrayList<String>> arrayLists;
+        ArrayList<RecyclerItem> recyclerItemArrayList;
         GetRedditData getRedditData = new GetRedditData();
         try {
-            arrayLists = getRedditData.execute().get();
+            recyclerItemArrayList = getRedditData.execute().get();
             System.out.println("Finished");
-            saveData(arrayLists);
-            Intent i = new Intent(SplashActivity.this, MainActivity.class);
+            saveData(recyclerItemArrayList);
+            final Intent i = new Intent(SplashActivity.this, MainActivity.class);
          //   i.putExtra("data", arrayLists);
-            startActivity(i);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(i);
+                }
+            }, 10500);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -51,22 +59,21 @@ public class SplashActivity extends AppCompatActivity {
         }
         //getRedditData.execute();
     }
-    private void saveData(ArrayList<ArrayList<String>> arrayLists){
+    private void saveData(ArrayList<RecyclerItem> recyclerItemArrayList){
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         Gson gson = new Gson();
-        String json = gson.toJson(arrayLists);
+        String json = gson.toJson(recyclerItemArrayList);
         editor.putString("list", json);
         editor.apply();
     }
-    private class GetRedditData extends AsyncTask<String, Void, ArrayList<ArrayList<String>>> {
+    private class GetRedditData extends AsyncTask<String, Void, ArrayList<RecyclerItem>> {
 
         private static final String TAG = "GetRedditDataAsyncTask";
 
         @Override
-        protected ArrayList<ArrayList<String>> doInBackground(String... strings) {
-            RecyclerViewAdapter adapter;
+        protected ArrayList<RecyclerItem> doInBackground(String... strings) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://leaguepulsereddit-env.pggnwbfn7t.us-west-1.elasticbeanstalk.com/")
                     .addConverterFactory(GsonConverterFactory.create())
@@ -91,6 +98,7 @@ public class SplashActivity extends AppCompatActivity {
             final ArrayList<String> link_to_reddit = new ArrayList<>();
             final ArrayList<String> dates = new ArrayList<>();
             final ArrayList<String> trending_levels = new ArrayList<>();
+            final ArrayList<RecyclerItem> recyclerItemArrayList = new ArrayList<>();
             assert response != null;
             if (!response.isSuccessful()) {
                 //not successful
@@ -101,18 +109,24 @@ public class SplashActivity extends AppCompatActivity {
             assert posts != null;
             for (Post post : posts) {
                 String self_text = post.getSelf_text();
+                Date date = new Date(post.getCreated_utc() * 1000L);
+                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("America"));
                 if (self_text.equals("")) {
+                    recyclerItemArrayList.add(new RecyclerItem(post.getTitle(),post.getUrl(),
+                            simpleDateFormat.format(date),String.valueOf(d_format.format(post.getTrending_level())),
+                            "yes",post.getPermalink()));
                     self_texts.add(post.getUrl()); //adds url of link to article/video if there is no selftext
                     clickable_link.add("yes");
                 } else {
+                    recyclerItemArrayList.add(new RecyclerItem(post.getTitle(),self_text,
+                            simpleDateFormat.format(date),String.valueOf(d_format.format(post.getTrending_level())),
+                            "no",post.getPermalink()));
                     self_texts.add(self_text);
                     clickable_link.add("no");
                 }
-                System.out.println("Post text: " + post.getSelf_text());
+                //System.out.println("Post text: " + post.getSelf_text());
                 post_titles.add(post.getTitle());
                 authors.add(post.getAuthor());
-                Date date = new Date(post.getCreated_utc() * 1000L);
-                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("America"));
                 dates.add(simpleDateFormat.format(date));
                 link_to_reddit.add(post.getPermalink());
                 trending_levels.add(String.valueOf(d_format.format(post.getTrending_level())));
@@ -124,18 +138,8 @@ public class SplashActivity extends AppCompatActivity {
             listOfRedditPostLists.add(link_to_reddit);
             listOfRedditPostLists.add(dates);
             listOfRedditPostLists.add(trending_levels);
-            return listOfRedditPostLists;
+            return recyclerItemArrayList;
         }
 
-        @Override
-        protected void onPostExecute(ArrayList<ArrayList<String>> arrayLists) {
-            System.out.println("In onPostExecute1");
-          //  Intent i = new Intent(getApplicationContext(), MainActivity.class);
-            System.out.println("In onPostExecute2");
-           // i.putExtra("data", arrayLists);
-            System.out.println("In onPostExecute3");
-          //  i.putParcelableArrayListExtra("list", (ArrayList<? extends Parcelable>) arrayLists);
-            //startActivity(i);
-        }
     }
 }
