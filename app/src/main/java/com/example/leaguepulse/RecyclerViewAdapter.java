@@ -31,7 +31,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     RecyclerViewAdapter(ArrayList<String> post_titles, ArrayList<String> self_texts,
                         ArrayList<String> authors, ArrayList<String> clickable_link, Context context,
-                        ArrayList<String>link_to_reddit, ArrayList<String> dates,
+                        ArrayList<String> link_to_reddit, ArrayList<String> dates,
                         ArrayList<String> trending_levels) {
         this.clickable_link = clickable_link;
         this.link_to_reddit = link_to_reddit;
@@ -58,8 +58,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Log.d(TAG, "onBindViewHolder: called.");
 
         //viewHolder.author.setText(authors.get(position));
+        System.out.println("Clickable link? " + clickable_link.get(viewHolder.getAdapterPosition()));
         if (clickable_link.get(viewHolder.getAdapterPosition()).equals("yes")) {
-
             //if there is a clickable link set the textview to be clickable
 
             viewHolder.self_text.setClickable(true);
@@ -75,7 +75,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         viewHolder.goto_reddit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String link = link_to_reddit.get(viewHolder.getAdapterPosition());
+                String link = "https://www.reddit.com" + link_to_reddit.get(viewHolder.getAdapterPosition());
                 Uri uri = Uri.parse(link); // missing 'http://' will cause crashed
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 context.startActivity(intent);
