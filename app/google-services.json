@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1032539134982",
+    "firebase_url": "https://leaguepulse-ce048.firebaseio.com",
+    "project_id": "leaguepulse-ce048",
+    "storage_bucket": "leaguepulse-ce048.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032539134982:android:48f5b16be1272f16",
+        "android_client_info": {
+          "package_name": "us.leagepulse.leaguepulse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032539134982-o1gv52gkqbamau4merngk0kv9lr1qrtg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-iK9A989zEE76zeuMRzCouKQV3XNvuCI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032539134982-o1gv52gkqbamau4merngk0kv9lr1qrtg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
