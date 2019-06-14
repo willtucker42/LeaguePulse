@@ -91,6 +91,18 @@ public class MainActivity extends AppCompatActivity {
     }*/
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        fManager.beginTransaction().hide(activeFragment).commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fManager.beginTransaction().show(activeFragment).commit();
+    }
+
+    @Override
     public void onBackPressed() {
         System.out.println("onbackpressed");
         Intent i = new Intent();

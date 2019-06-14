@@ -35,7 +35,6 @@ public class HomeFragment extends Fragment {
     RecyclerViewAdapter adapter;
     RecyclerView recyclerView;
     View root_view;
-    AVLoadingIndicatorView avi_spinner;
     @SuppressLint("SetTextI18n")
     @Nullable
     @Override
@@ -71,7 +70,6 @@ public class HomeFragment extends Fragment {
         Toolbar toolbar = root_view.findViewById(R.id.home_toolbar);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Trending");
-        avi_spinner = root_view.findViewById(R.id.home_spinner);
         //initRecyclerLists(root_view);
     }
     private class BindRecyclerData extends AsyncTask<View, Integer, RecyclerViewAdapter> {
@@ -86,7 +84,6 @@ public class HomeFragment extends Fragment {
         protected void onPostExecute(RecyclerViewAdapter adapter) {
             System.out.println("Finished binding data");
             recyclerView.setAdapter(adapter);
-            avi_spinner.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         }
 

@@ -38,6 +38,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         FirebaseMessaging.getInstance().subscribeToTopic("reddit_updates");
+        FirebaseMessaging.getInstance().subscribeToTopic("twitter_updates");
         ArrayList<RecyclerItem> recyclerItemArrayList;
         GetRedditData getRedditData = new GetRedditData();
         try {
@@ -91,14 +92,6 @@ public class SplashActivity extends AppCompatActivity {
             final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm a", Locale.US);
             simpleDateFormat.setTimeZone(TimeZone.getDefault());
             final DecimalFormat d_format = new DecimalFormat("#.#");
-            ArrayList<ArrayList<String>> listOfRedditPostLists = new ArrayList<>();
-            final ArrayList<String> post_titles = new ArrayList<>();
-            final ArrayList<String> self_texts = new ArrayList<>();
-            final ArrayList<String> authors = new ArrayList<>();
-            final ArrayList<String> clickable_link = new ArrayList<>();
-            final ArrayList<String> link_to_reddit = new ArrayList<>();
-            final ArrayList<String> dates = new ArrayList<>();
-            final ArrayList<String> trending_levels = new ArrayList<>();
             final ArrayList<RecyclerItem> recyclerItemArrayList = new ArrayList<>();
             assert response != null;
             if (!response.isSuccessful()) {
@@ -115,30 +108,16 @@ public class SplashActivity extends AppCompatActivity {
                 if (self_text.equals("")) {
                     recyclerItemArrayList.add(new RecyclerItem(post.getTitle(),post.getUrl(),
                             simpleDateFormat.format(date),String.valueOf(d_format.format(post.getTrending_level())),
-                            "yes",post.getPermalink()));
-                    self_texts.add(post.getUrl()); //adds url of link to article/video if there is no selftext
-                    clickable_link.add("yes");
+                            "yes",post.getPermalink(),post.getTwitter_handle(),
+                            post.getTwitter_name(),post.getTwitter_media_url(),post.getTwitter_media_type()));
                 } else {
                     recyclerItemArrayList.add(new RecyclerItem(post.getTitle(),self_text,
-                            simpleDateFormat.format(date),String.valueOf(d_format.format(post.getTrending_level())),
-                            "no",post.getPermalink()));
-                    self_texts.add(self_text);
-                    clickable_link.add("no");
+                            simpleDateFormat.format(date), String.valueOf(d_format.format(post.getTrending_level())),
+                            "no",post.getPermalink(),post.getTwitter_handle(),
+                            post.getTwitter_name(),post.getTwitter_media_url(),post.getTwitter_media_type()));
                 }
                 //System.out.println("Post text: " + post.getSelf_text());
-                post_titles.add(post.getTitle());
-                authors.add(post.getAuthor());
-                dates.add(simpleDateFormat.format(date));
-                link_to_reddit.add(post.getPermalink());
-                trending_levels.add(String.valueOf(d_format.format(post.getTrending_level())));
             }
-            listOfRedditPostLists.add(post_titles);
-            listOfRedditPostLists.add(self_texts);
-            listOfRedditPostLists.add(authors);
-            listOfRedditPostLists.add(clickable_link);
-            listOfRedditPostLists.add(link_to_reddit);
-            listOfRedditPostLists.add(dates);
-            listOfRedditPostLists.add(trending_levels);
             return recyclerItemArrayList;
         }
 

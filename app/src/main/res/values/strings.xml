@@ -8,4 +8,6 @@
     <string name="logo">logo</string>
     <string name="trending">Trending</string>
     <string name="alerts">Alerts</string>
+    <string name="open_on_reddit">Open on Reddit</string>
+    <string name="open_on_twitter">Open on Twitter</string>
 </resources>

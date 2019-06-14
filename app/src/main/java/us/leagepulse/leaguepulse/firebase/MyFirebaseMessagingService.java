@@ -156,11 +156,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.leaguepulse72pxv1)
+                        .setSmallIcon(R.drawable.transparentlp_launcher)
                         .setContentTitle(messageTitle)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
                         .setPriority(Notification.PRIORITY_HIGH)
+                        .setVisibility(Notification.VISIBILITY_PUBLIC)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
 
@@ -171,7 +173,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId,
                     "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+                    NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
         }
 

@@ -13,28 +13,18 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/cv_circle_image"
-            tools:ignore="HardcodedText"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:contentDescription="redditlogo"
-            android:src="@drawable/reddit_logo" />
 
         <TextView
             android:id="@+id/cv_post_title"
             tools:ignore="HardcodedText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_toEndOf="@id/cv_circle_image"
             android:ellipsize="end"
             android:fontFamily="@font/titilliiumbold"
-            android:maxLines="2"
+            android:maxLines="3"
             android:scrollHorizontally="true"
             android:text="Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title"
             android:textColor="#000000" />
@@ -44,7 +34,7 @@
             tools:ignore="HardcodedText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cv_circle_image"
+            android:layout_below="@id/cv_post_title"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"

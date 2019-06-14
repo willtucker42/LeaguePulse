@@ -16,6 +16,32 @@ public class Post {
     private String title;
     private double trending_level;
     private String url;
+    private String twitter_handle;
+    private String twitter_name;
+    private String twitter_media_url;
+    private String twitter_media_type;
+    private long twitter_id;
+
+
+    public String getTwitter_handle() {
+        return twitter_handle;
+    }
+
+    public String getTwitter_name() {
+        return twitter_name;
+    }
+
+    public String getTwitter_media_url() {
+        return twitter_media_url;
+    }
+
+    public String getTwitter_media_type() {
+        return twitter_media_type;
+    }
+
+    public long getTwitter_id() {
+        return twitter_id;
+    }
 
     public String getId() {
         return id;
@@ -29,40 +55,12 @@ public class Post {
         return created_utc;
     }
 
-    public long getCurrent_utc() {
-        return current_utc;
-    }
-
-    public String getDay_of_week() {
-        return day_of_week;
-    }
-
-    public int getHour_of_day() {
-        return hour_of_day;
-    }
-
-    public int getMinutes_ago_utc() {
-        return minutes_ago_utc;
-    }
-
     public String getPermalink() {
         return permalink;
     }
 
-    public int getScore() {
-        return score;
-    }
-
-    public double getScore_per_minute() {
-        return score_per_minute;
-    }
-
     public String getSelf_text() {
         return self_text;
-    }
-
-    public String getSubreddit() {
-        return subreddit;
     }
 
     public String getTitle() {
