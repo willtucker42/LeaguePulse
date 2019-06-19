@@ -8,6 +8,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 public interface RedditPHP {
-    @GET("get-trendingredditdata-json1.php")
+    //@GET("get-trendingredditdata-json1.php")
+    @GET("get-trendingtwitterreddit-json.php")
     Call<List<Post>> getData();
 }

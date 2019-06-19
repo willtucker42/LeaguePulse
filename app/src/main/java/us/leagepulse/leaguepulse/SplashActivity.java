@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -14,6 +14,7 @@ import com.leagepulse.leaguepulse.R;
 import us.leagepulse.leaguepulse.data.RecyclerItem;
 import us.leagepulse.leaguepulse.data.RedditPHP;
 import us.leagepulse.leaguepulse.data.redditdata.datamodel.Post;
+
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class SplashActivity extends AppCompatActivity {
             System.out.println("Finished");
             saveData(recyclerItemArrayList);
             final Intent i = new Intent(SplashActivity.this, MainActivity.class);
-         //   i.putExtra("data", arrayLists);
+            //   i.putExtra("data", arrayLists);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -61,7 +62,8 @@ public class SplashActivity extends AppCompatActivity {
         }
         //getRedditData.execute();
     }
-    private void saveData(ArrayList<RecyclerItem> recyclerItemArrayList){
+
+    private void saveData(ArrayList<RecyclerItem> recyclerItemArrayList) {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -70,6 +72,7 @@ public class SplashActivity extends AppCompatActivity {
         editor.putString("list", json);
         editor.apply();
     }
+
     private class GetRedditData extends AsyncTask<String, Void, ArrayList<RecyclerItem>> {
 
         private static final String TAG = "GetRedditDataAsyncTask";
@@ -77,7 +80,7 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected ArrayList<RecyclerItem> doInBackground(String... strings) {
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://leaguepulsereddit-env.pggnwbfn7t.us-west-1.elasticbeanstalk.com/")
+                    .baseUrl("http://gettrendingreddittwitter.us-west-1.elasticbeanstalk.com/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             RedditPHP redditPHP = retrofit.create(RedditPHP.class);
@@ -101,20 +104,36 @@ public class SplashActivity extends AppCompatActivity {
             }
             List<Post> posts = response.body();
             assert posts != null;
+            System.out.println("Posts size: " + posts.size());
             for (Post post : posts) {
                 String self_text = post.getSelf_text();
                 Date date = new Date(post.getCreated_utc() * 1000L);
                 simpleDateFormat.setTimeZone(TimeZone.getTimeZone("America"));
+                String media_type = post.getMedia_type();
+
+                String profile_pic_url =  post.getUser_profile_pic_url();
+                if(profile_pic_url!=null){
+                    profile_pic_url = profile_pic_url.replace("400x400","200x200");
+                }
+                if (media_type == null) {
+                    media_type = "";
+                }
                 if (self_text.equals("")) {
-                    recyclerItemArrayList.add(new RecyclerItem(post.getTitle(),post.getUrl(),
-                            simpleDateFormat.format(date),String.valueOf(d_format.format(post.getTrending_level())),
-                            "yes",post.getPermalink(),post.getTwitter_handle(),
-                            post.getTwitter_name(),post.getTwitter_media_url(),post.getTwitter_media_type()));
+                    recyclerItemArrayList.add(new RecyclerItem(post.getTitle(), post.getUrl(),
+                            simpleDateFormat.format(date),
+                            String.valueOf(d_format.format(post.getTrending_level())),
+                            "yes", post.getPermalink(),
+                            "@" + post.getTwitter_handle(), post.getTwitter_name(),
+                            post.getTwitter_media_url() == null ? "" : post.getTwitter_media_url(),
+                            media_type, profile_pic_url));
                 } else {
-                    recyclerItemArrayList.add(new RecyclerItem(post.getTitle(),self_text,
-                            simpleDateFormat.format(date), String.valueOf(d_format.format(post.getTrending_level())),
-                            "no",post.getPermalink(),post.getTwitter_handle(),
-                            post.getTwitter_name(),post.getTwitter_media_url(),post.getTwitter_media_type()));
+                    recyclerItemArrayList.add(new RecyclerItem(post.getTitle(), self_text,
+                            simpleDateFormat.format(date),
+                            String.valueOf(d_format.format(post.getTrending_level())),
+                            "no", post.getPermalink(),
+                            "@" + post.getTwitter_handle(), post.getTwitter_name(),
+                            post.getTwitter_media_url() == null ? "" : post.getTwitter_media_url(),
+                            post.getMedia_type() == null ? "" : post.getMedia_type(), profile_pic_url));
                 }
                 //System.out.println("Post text: " + post.getSelf_text());
             }

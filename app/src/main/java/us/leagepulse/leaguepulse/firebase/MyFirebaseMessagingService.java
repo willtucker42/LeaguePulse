@@ -9,7 +9,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
@@ -19,7 +19,6 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.leagepulse.leaguepulse.R;
 
-import us.leagepulse.leaguepulse.MainActivity;
 import us.leagepulse.leaguepulse.SplashActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -160,6 +159,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         .setContentTitle(messageTitle)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
+                        .setColor(getResources().getColor(R.color.colorPrimary))
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody))
                         .setPriority(Notification.PRIORITY_HIGH)
                         .setVisibility(Notification.VISIBILITY_PUBLIC)

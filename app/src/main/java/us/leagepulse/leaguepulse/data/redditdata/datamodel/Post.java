@@ -19,9 +19,13 @@ public class Post {
     private String twitter_handle;
     private String twitter_name;
     private String twitter_media_url;
-    private String twitter_media_type;
+    private String user_profile_pic_url;
+    private String media_type;
     private long twitter_id;
 
+    public String getUser_profile_pic_url() {
+        return user_profile_pic_url;
+    }
 
     public String getTwitter_handle() {
         return twitter_handle;
@@ -35,8 +39,8 @@ public class Post {
         return twitter_media_url;
     }
 
-    public String getTwitter_media_type() {
-        return twitter_media_type;
+    public String getMedia_type() {
+        return media_type;
     }
 
     public long getTwitter_id() {

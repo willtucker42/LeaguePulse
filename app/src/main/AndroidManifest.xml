@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup">
+
         <activity android:name="us.leagepulse.leaguepulse.SplashActivity"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">

@@ -8,25 +8,33 @@ public class RecyclerItem {
     private String mDate;
     private String mTrending_level;
     private String mClickable_link;
-    private String mLink_to_reddit;
+    private String mPermalink;
     private String mTwitter_handle;
     private String mTwitter_name;
     private String mTwitter_media_url;
     private String mMedia_type;
+    private String mUser_profile_pic_url;
 
     public RecyclerItem(String post_title, String self_text, String date, String trending_level,
-                        String clickable_link, String link_to_reddit, String twitter_handle,
-                        String twitter_name, String twitter_media_url, String media_type){
+                        String clickable_link, String permalink, String twitter_handle,
+                        String twitter_name, String twitter_media_url, String media_type,
+                        String user_profile_pic_url){
         mPost_title = post_title;
         mSelf_text = self_text;
         mDate = date;
         mTrending_level = trending_level;
         mClickable_link = clickable_link;
-        mLink_to_reddit = link_to_reddit;
+        mPermalink= permalink;
         mTwitter_handle = twitter_handle;
         mTwitter_name = twitter_name;
         mTwitter_media_url = twitter_media_url;
         mMedia_type = media_type;
+        mUser_profile_pic_url = user_profile_pic_url;
+
+    }
+
+    public String getmUser_profile_pic_url() {
+        return mUser_profile_pic_url;
     }
 
     public String getmTwitter_handle() {
@@ -65,7 +73,7 @@ public class RecyclerItem {
         return mClickable_link;
     }
 
-    public String getmLink_to_reddit() {
-        return mLink_to_reddit;
+    public String getmPermalink() {
+        return mPermalink;
     }
 }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cv_parent_layout"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="10dp"
@@ -49,16 +50,28 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_below="@id/cv_self_text"
+            android:layout_marginTop="3dp"
             android:layout_marginBottom="5dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/cv_gotoreddit_button"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
+                app:strokeColor="@color/redditOrange"
+                app:icon="@drawable/reddit_icon3"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="10dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:fontFamily="@font/titilliiumbold"
-                android:text="Open on Reddit"
+                app:iconTint="@color/redditOrange"
+                android:textSize="13sp"
+                app:iconPadding="8dp"
+                android:textColor="@color/redditOrange"
+                app:rippleColor="@color/redditOrange"
+                app:iconSize="20dp"
+                android:text="Open"
                 android:textAllCaps="false" />
 
             <TextView
@@ -85,4 +98,4 @@
         </RelativeLayout>
 
     </RelativeLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>
