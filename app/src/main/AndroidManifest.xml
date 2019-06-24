@@ -12,9 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="true"
         tools:ignore="AllowBackup">
 
-        <activity android:name="us.leagepulse.leaguepulse.SplashActivity"
+        <activity android:name="us.williamtucker.leaguepulse.SplashActivity"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -24,15 +25,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="us.leagepulse.leaguepulse.MainActivity"
+        <activity android:name="us.williamtucker.leaguepulse.MainActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
-        <service android:name="us.leagepulse.leaguepulse.firebase.MyFirebaseMessagingService">
+        <service android:name="us.williamtucker.leaguepulse.firebase.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <service android:name="us.leagepulse.leaguepulse.firebase.MyJobService" />
+        <service android:name="us.williamtucker.leaguepulse.firebase.MyJobService" />
     </application>
 
 </manifest>

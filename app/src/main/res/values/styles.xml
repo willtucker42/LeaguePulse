@@ -6,7 +6,7 @@
         <item name="colorPrimary">#008577</item> <!--used to be: #32ff87-->
         <item name="colorPrimaryDark">#006056</item><!--used to be:#3dce78-->
         <item name="android:windowDisablePreview">true</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">#008577</item>
     </style>
     <style name="Theme.Transparent" parent="android:Theme">
         <item name="android:windowIsTranslucent">true</item>

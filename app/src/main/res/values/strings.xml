@@ -10,4 +10,18 @@
     <string name="alerts">Alerts</string>
     <string name="open_on_reddit">Open on Reddit</string>
     <string name="open_on_twitter">Open on Twitter</string>
+    <string name="logo_for_the_pro_region">Logo for the pro region</string>
+    <string name="open">Open</string>
+    <string name="vs">vs</string>
+    <string name="reddit_alerts">Reddit Alerts</string>
+    <string name="all_trending_posts">All Trending posts</string>
+    <string name="top_trending_posts_less_notifications">Top Trending Posts (Fewer Notifications)</string>
+    <string name="twitter_alerts">Twitter Alerts</string>
+    <string name="all_trending_tweets">All Trending Tweets</string>
+    <string name="top_trending_tweets_less_notifications">Top Trending Tweets (Fewer Notifications)</string>
+    <string name="receive_reddit_notifications">Receive Trending Reddit Posts Notifications</string>
+    <string name="receive_tweets_from_na_related_accounts">Receive Tweets from NA related accounts</string>
+    <string name="receive_tweets_from_eu_related_accounts">Receive Tweets From EU Related Accounts</string>
+    <string name="receive_match_results_notifications">Receive Match Results Notifications</string>
+    <string name="receive_twitter_notifications">Receive Trending Tweet Notifications</string>
 </resources>

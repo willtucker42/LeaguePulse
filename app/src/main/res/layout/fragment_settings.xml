@@ -1,10 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/settings"
-    android:textSize="30sp"
-    android:layout_centerInParent="true"/>
-</RelativeLayout>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/settings_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="40dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/reddit_alerts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/settings_toolbar">
+
+        <TextView
+            android:id="@+id/reddit_alerts_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/titilliiumbold"
+            android:text="@string/reddit_alerts"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/reddit_radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:paddingStart="-5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reddit_alerts_title"
+            tools:ignore="RtlSymmetry">
+
+            <RadioButton
+                android:id="@+id/all_trending_reddit_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:fontFamily="@font/titilliumregular"
+                android:paddingStart="10dp"
+                android:text="@string/all_trending_posts"
+                android:textSize="15sp" />
+
+            <RadioButton
+                android:id="@+id/top_trending_reddit_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:buttonTint="@color/colorPrimary"
+                android:fontFamily="@font/titilliumregular"
+                android:paddingStart="10dp"
+                android:text="@string/top_trending_posts_less_notifications"
+                android:textSize="15sp" />
+        </RadioGroup>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/reddit_alerts" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/twitter_alerts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/divider1">
+
+        <TextView
+            android:id="@+id/twitter_alerts_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/titilliiumbold"
+            android:text="@string/twitter_alerts"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/twitter_radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:paddingStart="-5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/twitter_alerts_title"
+            tools:ignore="RtlSymmetry">
+
+            <RadioButton
+                android:id="@+id/all_trending_twitter_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/colorPrimary"
+                android:fontFamily="@font/titilliumregular"
+                android:paddingStart="10dp"
+                android:text="@string/all_trending_tweets"
+                android:textSize="15sp" />
+
+            <RadioButton
+                android:id="@+id/top_trending_twitter_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:buttonTint="@color/colorPrimary"
+                android:fontFamily="@font/titilliumregular"
+                android:paddingStart="10dp"
+                android:text="@string/top_trending_tweets_less_notifications"
+                android:textSize="15sp" />
+        </RadioGroup>
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/na_twitter_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:buttonTint="@color/colorPrimary"
+            android:paddingStart="10dp"
+            android:text="@string/receive_tweets_from_na_related_accounts"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/twitter_radio_group"
+            tools:ignore="RtlSymmetry" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/eu_twitter_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:buttonTint="@color/colorPrimary"
+            android:paddingStart="10dp"
+            android:text="@string/receive_tweets_from_eu_related_accounts"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/na_twitter_checkbox"
+            tools:ignore="RtlSymmetry" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/twitter_alerts" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/all_alerts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/divider2">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/reddit_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="10dp"
+            app:switchPadding="179dp"
+            android:text="@string/receive_reddit_notifications"
+            android:fontFamily="@font/titilliumregular"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/twitter_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="10dp"
+            app:switchPadding="175.5dp"
+            android:text="@string/receive_twitter_notifications"
+            android:fontFamily="@font/titilliumregular"
+            android:buttonTint="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reddit_switch" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/match_results_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="10dp"
+            app:switchPadding="132.5dp"
+            android:buttonTint="@color/colorPrimary"
+            android:text="@string/receive_match_results_notifications"
+            android:fontFamily="@font/titilliumregular"
+            android:layout_marginStart="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/twitter_switch" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
