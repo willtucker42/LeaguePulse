@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -127,8 +128,9 @@ public class SplashActivity extends AppCompatActivity {
             } catch (IOException e) {
                 Log.e(TAG, "Catch: " + e.toString());
             }
-            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm a", Locale.US);
-            simpleDateFormat.setTimeZone(TimeZone.getDefault());
+            Calendar cal = Calendar.getInstance();
+            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm a");
+            simpleDateFormat.setTimeZone(cal.getTimeZone());
             final DecimalFormat d_format = new DecimalFormat("#.#");
             final ArrayList<RecyclerItem> recyclerItemArrayList = new ArrayList<>();
             assert response != null;
@@ -143,7 +145,6 @@ public class SplashActivity extends AppCompatActivity {
             for (Post post : posts) {
                 String self_text = post.getSelf_text();
                 Date date = new Date(post.getCreated_utc() * 1000L);
-                simpleDateFormat.setTimeZone(TimeZone.getTimeZone("America"));
                 String media_type = post.getMedia_type();
                 String score, team1 = null, team2 = null, winner_line = null,
                         title = post.getTitle(), week_region = null;

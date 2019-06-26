@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -168,6 +169,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Picasso.get().load(currentItem.getmUser_profile_pic_url())
                     .placeholder(R.drawable.ic_person_black_24dp)
                     .into(viewHolder.profile_pic);
+          //  Glide.with(context).load(currentItem.getmUser_profile_pic_url()).into(viewHolder.profile_pic);
             String media_type = currentItem.getmMedia_type();
             System.out.print("running setmedia for: " + currentItem.getmTwitter_name() + "--");
             setMedia(media_type, currentItem.getmTwitter_media_url(), viewHolder, currentItem);
@@ -204,6 +206,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             viewHolder.picture_imageview.setVisibility(View.VISIBLE);
             Picasso.get().load(media_url)
                     .placeholder(R.drawable.placeholder2).into(viewHolder.picture_imageview);
+            //Glide.with(context).load(media_url).into(viewHolder.picture_imageview)
         } else if (media_type.equals("video") && !media_url.equals("")) {
             viewHolder.picture_imageview.setVisibility(View.GONE);
             uri = Uri.parse(currentItem.getmTwitter_media_url());
