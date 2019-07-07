@@ -3,14 +3,19 @@ package us.williamtucker.leaguepulse;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.AsyncTask;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +39,7 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.leagepulse.leaguepulse.R;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import us.williamtucker.leaguepulse.data.RecyclerItem;
@@ -58,6 +64,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private TrackSelector selector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bMeter));
     private DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
     private ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+    private BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
 
     @Override
     public int getItemViewType(int position) {
@@ -85,6 +92,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     RecyclerViewAdapter(ArrayList<RecyclerItem> recyclerItems, Context context) {
+        bitmapOptions.inJustDecodeBounds = true;
         mRecycleritems = recyclerItems;
         this.context = context;
     }
@@ -97,15 +105,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         View view;
         RecyclerView.ViewHolder view_holder;
 
-        if(viewType == VIEW_TYPE_TWITTER){
+        if (viewType == VIEW_TYPE_TWITTER) {
+           // System.out.println("ree twitter");
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.twitter_cardview,
                     parent, false);
             view_holder = new TwitterViewHolder(view);
-        }else if(viewType==VIEW_TYPE_REDDIT){
+        } else if (viewType == VIEW_TYPE_REDDIT) {
+          //  System.out.println("ree reddit");
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.reddit_cardview,
                     parent, false);
             view_holder = new RedditViewHolder(view);
-        }else{
+        } else {
+          //  System.out.println("ree progame");
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.progame_cardview,
                     parent, false);
             view_holder = new ProGameViewHolder(view);
@@ -135,148 +146,141 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder1, int position) {
+        long startTime = System.currentTimeMillis();
         final RecyclerItem currentItem = mRecycleritems.get(position);
-        if (viewHolder1.getItemViewType() == VIEW_TYPE_REDDIT) {
-            RedditViewHolder viewHolder = (RedditViewHolder) viewHolder1;
-            String self_text = currentItem.getmSelf_text();
-            //viewHolder.author.setText(authors.get(position));
-            // System.out.println("Clickable link? " + clickable_link.get(viewHolder.getAdapterPosition()));
-            if (currentItem.getmClickable_link().equals("yes")) {
-                //if there is a clickable link set the textview to be clickable
+        //System.out.println("re onbindviewholder");
+        try {
+            if (viewHolder1.getItemViewType() == VIEW_TYPE_REDDIT) {
+                RedditViewHolder viewHolder = (RedditViewHolder) viewHolder1;
+                String self_text = currentItem.getmSelf_text();
+                //viewHolder.author.setText(authors.get(position));
+                // System.out.println("Clickable link? " + clickable_link.get(viewHolder.getAdapterPosition()));
+                if (currentItem.getmClickable_link().equals("yes")) {
+                    //if there is a clickable link set the textview to be clickable
 
-                viewHolder.self_text.setClickable(true);
-                viewHolder.self_text.setMovementMethod(LinkMovementMethod.getInstance());
-                String link = "<a href='" + self_text + "'>" + self_text + " </a>";
-                viewHolder.self_text.setText((Html.fromHtml(link)));
+                    viewHolder.self_text.setClickable(true);
+                    viewHolder.self_text.setMovementMethod(LinkMovementMethod.getInstance());
+                    String link = "<a href='" + self_text + "'>" + self_text + " </a>";
+                    viewHolder.self_text.setText((Html.fromHtml(link)));
+                } else {
+                    viewHolder.self_text.setText(self_text);
+                }
+                viewHolder.date_text.setText(currentItem.getmDate());
+                viewHolder.trending_level.setText(currentItem.getmTrending_level());
+                viewHolder.post_title.setText(currentItem.getmPost_title());
+                viewHolder.goto_reddit_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String link = "https://www.reddit.com" + currentItem.getmPermalink();
+                        Uri uri = Uri.parse(link); // missing 'http://' will cause crashed
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        context.startActivity(intent);
+                    }
+                });
+            } else if (viewHolder1.getItemViewType() == VIEW_TYPE_TWITTER) {
+                System.out.print(currentItem.getmTwitter_name() + " " + currentItem.getmMedia_type());
+                TwitterViewHolder viewHolder = (TwitterViewHolder) viewHolder1;
+                Picasso.get().load(currentItem.getmUser_profile_pic_url())
+                        .placeholder(R.drawable.ic_person_black_24dp)
+                        .into(viewHolder.profile_pic);
+                //  Glide.with(context).load(currentItem.getmUser_profile_pic_url()).into(viewHolder.profile_pic);
+                String media_type = currentItem.getmMedia_type();
+                System.out.print("running setmedia for: " + currentItem.getmTwitter_name() + "--");
+                viewHolder.video_view.setVisibility(View.GONE);
+                viewHolder.picture_imageview.setVisibility(View.GONE);
+                setMedia(media_type, currentItem.getmTwitter_media_url(), viewHolder, currentItem);
+
+                viewHolder.self_text.setText(currentItem.getmSelf_text());
+                viewHolder.twitter_handle.setText(currentItem.getmTwitter_handle());
+                viewHolder.twitter_name.setText(currentItem.getmTwitter_name());
+                viewHolder.date_text.setText(currentItem.getmDate());
+                viewHolder.goto_twitter_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String link = currentItem.getmPermalink();
+                        Uri uri = Uri.parse(link);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        context.startActivity(intent);
+                    }
+                });
             } else {
-                viewHolder.self_text.setText(self_text);
+                ProGameViewHolder viewHolder = (ProGameViewHolder) viewHolder1;
+                viewHolder.winner_line_text.setText(currentItem.getmWinner_line());
+                viewHolder.week_region_text.setText(currentItem.getmWeek_region());
+                viewHolder.title_text.setText(currentItem.getmTeam1() + " vs. " + currentItem.getmTeam2());
+                Picasso.get().load(currentItem.getmTeam1_logo()).placeholder(R.drawable.placeholder2).into(viewHolder.team1_logo);
+                Picasso.get().load(currentItem.getmTeam2_logo()).placeholder(R.drawable.placeholder2).into(viewHolder.team2_logo);
+               //viewHolder.team1_logo.setImageResource(currentItem.getmTeam1_logo());
+              //viewHolder.team2_logo.setImageResource(currentItem.getmTeam2_logo());
             }
-            viewHolder.date_text.setText(currentItem.getmDate());
-            viewHolder.trending_level.setText(currentItem.getmTrending_level());
-            viewHolder.post_title.setText(currentItem.getmPost_title());
-            viewHolder.goto_reddit_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String link = "https://www.reddit.com" + currentItem.getmPermalink();
-                    Uri uri = Uri.parse(link); // missing 'http://' will cause crashed
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    context.startActivity(intent);
-                }
-            });
-        } else if (viewHolder1.getItemViewType() == VIEW_TYPE_TWITTER) {
-            System.out.print(currentItem.getmTwitter_name() + " " + currentItem.getmMedia_type());
-            TwitterViewHolder viewHolder = (TwitterViewHolder) viewHolder1;
-            Picasso.get().load(currentItem.getmUser_profile_pic_url())
-                    .placeholder(R.drawable.ic_person_black_24dp)
-                    .into(viewHolder.profile_pic);
-          //  Glide.with(context).load(currentItem.getmUser_profile_pic_url()).into(viewHolder.profile_pic);
-            String media_type = currentItem.getmMedia_type();
-            System.out.print("running setmedia for: " + currentItem.getmTwitter_name() + "--");
-            setMedia(media_type, currentItem.getmTwitter_media_url(), viewHolder, currentItem);
-
-            viewHolder.self_text.setText(currentItem.getmSelf_text());
-            viewHolder.twitter_handle.setText(currentItem.getmTwitter_handle());
-            viewHolder.twitter_name.setText(currentItem.getmTwitter_name());
-            viewHolder.date_text.setText(currentItem.getmDate());
-            viewHolder.goto_twitter_button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String link = currentItem.getmPermalink();
-                    Uri uri = Uri.parse(link);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    context.startActivity(intent);
-                }
-            });
-        }else{
-            ProGameViewHolder viewHolder = (ProGameViewHolder) viewHolder1;
-            viewHolder.winner_line_text.setText(currentItem.getmWinner_line());
-            viewHolder.week_region_text.setText(currentItem.getmWeek_region());
-            viewHolder.title_text.setText(currentItem.getmTeam1() + " vs. "+currentItem.getmTeam2());
-            viewHolder.team1_logo.setImageResource(currentItem.getmTeam1_logo());
-            viewHolder.team2_logo.setImageResource(currentItem.getmTeam2_logo());
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
         }
+       // Log.i(TAG, "bindView time: " + (System.currentTimeMillis() - startTime));
     }
+
     private void setMedia(String media_type, String media_url, TwitterViewHolder viewHolder,
                           RecyclerItem currentItem) {
         SimpleExoPlayer exoPlayer;
         Uri uri;
         if (media_type.equals("photo") && !media_url.equals("")) {
-            viewHolder.video_view.setVisibility(View.GONE);
-            System.out.println("Media type is photo");
-            viewHolder.picture_imageview.setVisibility(View.VISIBLE);
-            Picasso.get().load(media_url)
-                    .placeholder(R.drawable.placeholder2).into(viewHolder.picture_imageview);
-            //Glide.with(context).load(media_url).into(viewHolder.picture_imageview)
+            System.out.println("IN PHOTO: ");
+            try {
+                // viewHolder.video_view.setVisibility(View.GONE);
+                //.resize(1920,1080).onlyScaleDown()
+                Picasso.get().load(media_url)
+                        .placeholder(R.drawable.placeholder2).into(viewHolder.picture_imageview);
+                viewHolder.picture_imageview.setVisibility(View.VISIBLE);
+                //Glide.with(context).load(media_url).into(viewHolder.picture_imageview)
+            } catch (Exception e) {
+                viewHolder.picture_imageview.setVisibility(View.GONE);
+                Log.e(TAG, "Error setting photo");
+                Log.e(TAG, e.toString());
+            }
         } else if (media_type.equals("video") && !media_url.equals("")) {
-            viewHolder.picture_imageview.setVisibility(View.GONE);
-            uri = Uri.parse(currentItem.getmTwitter_media_url());
-            System.out.println("Media video: " + currentItem.getmTwitter_media_url());
+            // viewHolder.picture_imageview.setVisibility(View.GONE);
             PlayerView playerView = viewHolder.video_view;
-            exoPlayer = ExoPlayerFactory.newSimpleInstance(context, selector);
-            MediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory, extractorsFactory, null, null);
-            playerView.setPlayer(exoPlayer);
-            exoPlayer.prepare(mediaSource);
-            exoPlayer.setPlayWhenReady(false);
-            playerView.hideController();
-            playerView.setVisibility(View.VISIBLE);
+            try {
+                uri = Uri.parse(currentItem.getmTwitter_media_url());
+                System.out.println("Media video: " + currentItem.getmTwitter_media_url());
+                exoPlayer = ExoPlayerFactory.newSimpleInstance(context, selector);
+                MediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory, extractorsFactory, null, null);
+                playerView.setPlayer(exoPlayer);
+                exoPlayer.prepare(mediaSource);
+                exoPlayer.setPlayWhenReady(false);
+                playerView.hideController();
+            } catch (Exception e) {
+                playerView.setVisibility(View.GONE);
+                Log.e(TAG, "Error setting video");
+                Log.e(TAG, e.toString());
+            }
         } else if (media_type.equals("animated_gif") && !media_url.equals("")) {
-            viewHolder.picture_imageview.setVisibility(View.GONE);
-            System.out.println("Media type is gif");
-            System.out.println("Media video: " + currentItem.getmTwitter_media_url());
-            uri = Uri.parse(currentItem.getmTwitter_media_url());
+            // viewHolder.picture_imageview.setVisibility(View.GONE);
             PlayerView playerView = viewHolder.video_view;
-            exoPlayer = ExoPlayerFactory.newSimpleInstance(context, selector);
-            MediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory, extractorsFactory, null, null);
-            playerView.setPlayer(exoPlayer);
-            exoPlayer.prepare(mediaSource);
-            exoPlayer.seekTo(0);
-            exoPlayer.setPlayWhenReady(true);
-            playerView.hideController();
-            playerView.setVisibility(View.VISIBLE);
+            try {
+                System.out.println("Media type is gif");
+                System.out.println("Media video: " + currentItem.getmTwitter_media_url());
+                uri = Uri.parse(currentItem.getmTwitter_media_url());
+                exoPlayer = ExoPlayerFactory.newSimpleInstance(context, selector);
+                MediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory, extractorsFactory, null, null);
+                playerView.setPlayer(exoPlayer);
+                exoPlayer.prepare(mediaSource);
+                exoPlayer.seekTo(0);
+                exoPlayer.setPlayWhenReady(true);
+                playerView.hideController();
+                playerView.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
+                playerView.setVisibility(View.GONE);
+                Log.e(TAG, "Error setting video");
+                Log.e(TAG, e.toString());
+            }
         } else {
-            viewHolder.video_view.setVisibility(View.GONE);
-            viewHolder.picture_imageview.setVisibility(View.GONE);
+            // viewHolder.video_view.setVisibility(View.GONE);
+            // viewHolder.picture_imageview.setVisibility(View.GONE);
             System.out.println(" else?");
         }
+
     }
-
-/*
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int position) {
-        Log.d(TAG, "onBindViewHolder: called.");
-        final RecyclerItem currentItem = mRecycleritems.get(position);
-        String self_text = currentItem.getmSelf_text();
-        //viewHolder.author.setText(authors.get(position));
-        // System.out.println("Clickable link? " + clickable_link.get(viewHolder.getAdapterPosition()));
-        if (currentItem.getmClickable_link().equals("yes")) {
-            //if there is a clickable link set the textview to be clickable
-
-            viewHolder.self_text.setClickable(true);
-            viewHolder.self_text.setMovementMethod(LinkMovementMethod.getInstance());
-            String link = "<a href='" + self_text + "'>" + self_text + " </a>";
-            viewHolder.self_text.setText((Html.fromHtml(link)));
-        } else {
-            viewHolder.self_text.setText(self_text);
-        }
-        viewHolder.date_text.setText(currentItem.getmDate());
-        viewHolder.trending_level.setText(currentItem.getmTrending_level());
-        viewHolder.post_title.setText(currentItem.getmPost_title());
-        viewHolder.goto_reddit_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String link = "https://www.reddit.com" + currentItem.getmLink_to_reddit();
-                Uri uri = Uri.parse(link); // missing 'http://' will cause crashed
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                context.startActivity(intent);
-            }
-        });
-       /* viewHolder.parent_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: clicked on: " + currentItem.getmPost_title());
-            }
-        });
-    }*/
 
     @Override
     public int getItemCount() {
@@ -337,6 +341,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView title_text;
         TextView week_region_text;
         TextView winner_line_text;
+
         ProGameViewHolder(@NonNull View itemView) {
             super(itemView);
             team1_logo = itemView.findViewById(R.id.pgcv_team1_logo);

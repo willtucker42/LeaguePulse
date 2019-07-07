@@ -58,7 +58,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cv_self_text"
                 app:strokeColor="@color/redditOrange"
-                app:icon="@drawable/reddit_icon3"
+                app:icon="@drawable/reddit_icon3_resize"
                 app:strokeWidth="1dp"
                 app:cornerRadius="5dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"

@@ -79,7 +79,14 @@ public class SplashActivity extends AppCompatActivity {
             editor.putBoolean("eu_region_checked", true);
             editor.apply();
         } else {
-            System.out.println("Not null?!: " + sharedPreferences.getString("reddit_alert_option", null));
+            System.out.println("Not null?!: ");
+            System.out.println(sharedPreferences.getString("twitter_alert_option",""));
+            System.out.println(sharedPreferences.getString("reddit_alert_option",""));
+            System.out.println(sharedPreferences.getBoolean("receive_twitter_alerts",true));
+            System.out.println(sharedPreferences.getBoolean("receive_reddit_alerts",true));
+            System.out.println(sharedPreferences.getBoolean("receive_match_alerts",true));
+            System.out.println(sharedPreferences.getBoolean("na_region_checked",true));
+            System.out.println(sharedPreferences.getBoolean("eu_region_checked",true));
         }
     }
 
@@ -233,19 +240,19 @@ public class SplashActivity extends AppCompatActivity {
             } else if (team1.equals("Fnatic")) {
                 return R.drawable.fnatic_logo;
             } else if (team1.contains("G2")) {
-                return R.drawable.g2_logo;
+                return R.drawable.g2_logo_resize;
             } else if (team1.equals("Splyce")) {
-                return R.drawable.splyce_logo;
+                return R.drawable.splyce_logo_resize;
             } else if (team1.contains("Schalke")) {
-                return R.drawable.schalke_logo;
+                return R.drawable.schalke_logo_resize;
             } else if (team1.equals("SK Gaming")) {
                 return R.drawable.sk_gaming_logo;
             } else if (team1.equals("Rogue")) {
                 return R.drawable.rogue_logo;
             } else if (team1.contains("Misfits")) {
-                return R.drawable.misfits_logo;
+                return R.drawable.misfits_logo_resize;
             } else if (team1.equals("Team Vitality")) {
-                return R.drawable.vitality_logo;
+                return R.drawable.vitality_logo_resize;
             } else if (team1.equals("Excel Esports")) {
                 return R.drawable.excel_logo;
             } else {
@@ -253,9 +260,9 @@ public class SplashActivity extends AppCompatActivity {
             }
         } else if (week_region != null && week_region.contains("LCS")) {
             if (team1.contains("Cloud")) {
-                return R.drawable.c9_logo2;
+                return R.drawable.c9_logo2_resize;
             } else if (team1.equals("Counter Logic Gaming")) {
-                return R.drawable.clg_logo;
+                return R.drawable.clg_logo_resize;
             } else if (team1.equals("Golden Guardians")) {
                 return R.drawable.golden_guardians_logo;
             } else if (team1.equals("OpTic Gaming") || team1.equals("Optic Gaming")) {
@@ -265,7 +272,7 @@ public class SplashActivity extends AppCompatActivity {
             } else if (team1.equals("Team SoloMid")) {
                 return R.drawable.tsm_logo;
             } else if (team1.equals("Clutch Gaming")) {
-                return R.drawable.cg_logo;
+                return R.drawable.cg_logo_resize;
             } else if (team1.contains("100")) {
                 return R.drawable.thieves_logo;
             } else if (team1.equals("Echo Fox")) {

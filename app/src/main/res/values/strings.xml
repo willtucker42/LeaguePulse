@@ -24,4 +24,7 @@
     <string name="receive_tweets_from_eu_related_accounts">Receive Tweets From EU Related Accounts</string>
     <string name="receive_match_results_notifications">Receive Match Results Notifications</string>
     <string name="receive_twitter_notifications">Receive Trending Tweet Notifications</string>
+    <string name="turn_off_reddit_notifications">Turn off Reddit Notifications</string>
+    <string name="turn_off_tweet_notifications">Turn off Tweet Notifications</string>
+    <string name="turn_off_match_results_notifications">Turn off Match Results Notifications</string>
 </resources>
