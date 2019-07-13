@@ -10,6 +10,8 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
@@ -106,17 +108,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         RecyclerView.ViewHolder view_holder;
 
         if (viewType == VIEW_TYPE_TWITTER) {
-           // System.out.println("ree twitter");
+            // System.out.println("ree twitter");
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.twitter_cardview,
                     parent, false);
             view_holder = new TwitterViewHolder(view);
         } else if (viewType == VIEW_TYPE_REDDIT) {
-          //  System.out.println("ree reddit");
+            //  System.out.println("ree reddit");
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.reddit_cardview,
                     parent, false);
             view_holder = new RedditViewHolder(view);
         } else {
-          //  System.out.println("ree progame");
+            //  System.out.println("ree progame");
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.progame_cardview,
                     parent, false);
             view_holder = new ProGameViewHolder(view);
@@ -157,7 +159,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 // System.out.println("Clickable link? " + clickable_link.get(viewHolder.getAdapterPosition()));
                 if (currentItem.getmClickable_link().equals("yes")) {
                     //if there is a clickable link set the textview to be clickable
-
+                    if (self_text.contains("youtube.com")) {
+                        System.out.println("Reddit link is a youtube link");
+                    }
                     viewHolder.self_text.setClickable(true);
                     viewHolder.self_text.setMovementMethod(LinkMovementMethod.getInstance());
                     String link = "<a href='" + self_text + "'>" + self_text + " </a>";
@@ -204,19 +208,42 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 });
             } else {
-                ProGameViewHolder viewHolder = (ProGameViewHolder) viewHolder1;
+                final ProGameViewHolder viewHolder = (ProGameViewHolder) viewHolder1;
                 viewHolder.winner_line_text.setText(currentItem.getmWinner_line());
                 viewHolder.week_region_text.setText(currentItem.getmWeek_region());
+                viewHolder.show_winner.setVisibility(View.VISIBLE);
+                viewHolder.winner_line_text.setVisibility(View.GONE);
                 viewHolder.title_text.setText(currentItem.getmTeam1() + " vs. " + currentItem.getmTeam2());
+                viewHolder.match_details.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String link = "https://www.reddit.com" + currentItem.getmPermalink();
+                        Uri uri = Uri.parse(link); // missing 'http://' will cause crashed
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        context.startActivity(intent);
+                    }
+                });
+                viewHolder.show_winner.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        viewHolder.show_winner.setVisibility(View.GONE);
+                        viewHolder.winner_line_text.setVisibility(View.VISIBLE);
+                       /* ConstraintSet constraintSet = new ConstraintSet();
+                        constraintSet.clone(viewHolder.constraintLayout);
+                        constraintSet.connect(R.id.pgcv_match_details_button,ConstraintSet.BOTTOM,
+                                R.id.pgcv_winner_line,ConstraintSet.TOP,0);*/
+
+                    }
+                });
                 Picasso.get().load(currentItem.getmTeam1_logo()).placeholder(R.drawable.placeholder2).into(viewHolder.team1_logo);
                 Picasso.get().load(currentItem.getmTeam2_logo()).placeholder(R.drawable.placeholder2).into(viewHolder.team2_logo);
-               //viewHolder.team1_logo.setImageResource(currentItem.getmTeam1_logo());
-              //viewHolder.team2_logo.setImageResource(currentItem.getmTeam2_logo());
+                //viewHolder.team1_logo.setImageResource(currentItem.getmTeam1_logo());
+                //viewHolder.team2_logo.setImageResource(currentItem.getmTeam2_logo());
             }
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
-       // Log.i(TAG, "bindView time: " + (System.currentTimeMillis() - startTime));
+        // Log.i(TAG, "bindView time: " + (System.currentTimeMillis() - startTime));
     }
 
     private void setMedia(String media_type, String media_url, TwitterViewHolder viewHolder,
@@ -338,12 +365,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     class ProGameViewHolder extends RecyclerView.ViewHolder {
         ImageView team1_logo;
         ImageView team2_logo;
+        Button match_details;
+        Button show_winner;
         TextView title_text;
         TextView week_region_text;
         TextView winner_line_text;
+        ConstraintLayout constraintLayout;
 
         ProGameViewHolder(@NonNull View itemView) {
             super(itemView);
+            constraintLayout = itemView.findViewById(R.id.pgcv_main_constraint_layout);
+            match_details = itemView.findViewById(R.id.pgcv_match_details_button);
+            show_winner = itemView.findViewById(R.id.show_winner_button);
             team1_logo = itemView.findViewById(R.id.pgcv_team1_logo);
             team2_logo = itemView.findViewById(R.id.pgcv_team2_logo);
             title_text = itemView.findViewById(R.id.pgcv_title);

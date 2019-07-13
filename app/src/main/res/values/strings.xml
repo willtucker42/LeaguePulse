@@ -27,4 +27,6 @@
     <string name="turn_off_reddit_notifications">Turn off Reddit Notifications</string>
     <string name="turn_off_tweet_notifications">Turn off Tweet Notifications</string>
     <string name="turn_off_match_results_notifications">Turn off Match Results Notifications</string>
+    <string name="open_match_details">Open Match Details</string>
+    <string name="tap_to_see_winner">Tap to see winner</string>
 </resources>

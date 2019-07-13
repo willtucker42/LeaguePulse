@@ -36,9 +36,9 @@ public class SettingsFragment extends Fragment {
     }
 
     private void initVar(View root_view) {
-        Toolbar toolbar = root_view.findViewById(R.id.settings_toolbar);
-        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
-        Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Customize Alerts");
+       /// Toolbar toolbar = root_view.findViewById(R.id.settings_toolbar);
+       /// ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
+       /// Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Customize Alerts");
         SharedPreferences sharedPreferences = Objects.requireNonNull(this.getActivity()).getSharedPreferences("shared preferences", MODE_PRIVATE);
         final SharedPreferences.Editor editor = sharedPreferences.edit();
 

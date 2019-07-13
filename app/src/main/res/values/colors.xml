@@ -5,4 +5,6 @@
     <color name="colorAccent">#D81B60</color>
     <color name="twitterBlue">#38A1F3</color>
     <color name="redditOrange">#FF3F18</color>
+    <color name="red">#ff0000</color>
+    <color name="white">#ffffff</color>
 </resources>

@@ -47,11 +47,11 @@ public class MainActivity extends AppCompatActivity {
                 new HomeFragment()).commit();*/
     }
 
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.bottom_nav, menu);
         return true;
-    }
+    }*/
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {

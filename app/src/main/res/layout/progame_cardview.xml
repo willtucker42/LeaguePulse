@@ -9,7 +9,7 @@
     android:elevation="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/pgcv_rel_lay_1"
+        android:id="@+id/pgcv_main_constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -29,12 +29,12 @@
             android:id="@+id/pgcv_team2_logo"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:contentDescription="Logo for Team 2 (right team)"
             android:src="@drawable/c9_logo2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="HardcodedText" />
 
 
@@ -44,48 +44,84 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_toStartOf="@id/pgcv_team2_logo"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/pgcv_team1_logo"
-            app:layout_constraintEnd_toStartOf="@id/pgcv_team2_logo"
-            android:text="Team SoloMid vs. Cloud9"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="19sp"
             android:ellipsize="end"
             android:fontFamily="@font/titilliiumbold"
             android:maxLines="3"
             android:scrollHorizontally="true"
+            android:text="Team SoloMid vs. Cloud9"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="19sp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@id/pgcv_team2_logo"
+            app:layout_constraintStart_toEndOf="@id/pgcv_team1_logo"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/pgcv_week_region_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/pgcv_title"
-            app:layout_constraintStart_toEndOf="@id/pgcv_team1_logo"
-            app:layout_constraintEnd_toStartOf="@id/pgcv_team2_logo"
             android:fontFamily="@font/titilliiumbold"
             android:text="LCS 2019 Summer - Week 3"
             android:textAlignment="center"
             android:textColor="#808184"
             android:textSize="15sp"
+            app:layout_constraintEnd_toStartOf="@id/pgcv_team2_logo"
+            app:layout_constraintStart_toEndOf="@id/pgcv_team1_logo"
+            app:layout_constraintTop_toBottomOf="@id/pgcv_title"
             tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/pgcv_winner_line"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
             android:layout_marginTop="15dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pgcv_week_region_text"
             android:fontFamily="@font/titilliiumbold"
+            android:paddingBottom="5dp"
             android:text="Winner: Team SoloMid in 35 Minutes"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="19sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pgcv_week_region_text"
             tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/show_winner_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:fontFamily="@font/titilliiumbold"
+            app:layout_constraintTop_toBottomOf="@id/pgcv_week_region_text"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:paddingBottom="5dp"
+            android:textColor="@color/red"
+            app:rippleColor="@color/red"
+            app:strokeColor="@color/red"
+            android:text="@string/tap_to_see_winner" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/pgcv_match_details_button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="55dp"
+            android:fontFamily="@font/titilliiumbold"
+            android:text="@string/open_match_details"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:textSize="13sp"
+            app:cornerRadius="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pgcv_team2_logo"
+            app:rippleColor="@color/redditOrange"
+            app:strokeColor="@color/colorPrimary"
+            app:strokeWidth="1dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

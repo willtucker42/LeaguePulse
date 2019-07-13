@@ -22,4 +22,14 @@
         android:layout_centerHorizontal="true"
         android:layout_alignBottom="@id/logo"
         app:indicatorName="TriangleSkewSpinIndicator" />
+    <TextView
+        android:id="@+id/version"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Version 1.0.0"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/sansation_regular"
+        android:layout_marginBottom="2dp"
+        android:textColor="@color/white"/>
 </RelativeLayout>

@@ -80,13 +80,13 @@ public class SplashActivity extends AppCompatActivity {
             editor.apply();
         } else {
             System.out.println("Not null?!: ");
-            System.out.println(sharedPreferences.getString("twitter_alert_option",""));
-            System.out.println(sharedPreferences.getString("reddit_alert_option",""));
-            System.out.println(sharedPreferences.getBoolean("receive_twitter_alerts",true));
-            System.out.println(sharedPreferences.getBoolean("receive_reddit_alerts",true));
-            System.out.println(sharedPreferences.getBoolean("receive_match_alerts",true));
-            System.out.println(sharedPreferences.getBoolean("na_region_checked",true));
-            System.out.println(sharedPreferences.getBoolean("eu_region_checked",true));
+            System.out.println(sharedPreferences.getString("twitter_alert_option", ""));
+            System.out.println(sharedPreferences.getString("reddit_alert_option", ""));
+            System.out.println(sharedPreferences.getBoolean("receive_twitter_alerts", true));
+            System.out.println(sharedPreferences.getBoolean("receive_reddit_alerts", true));
+            System.out.println(sharedPreferences.getBoolean("receive_match_alerts", true));
+            System.out.println(sharedPreferences.getBoolean("na_region_checked", true));
+            System.out.println(sharedPreferences.getBoolean("eu_region_checked", true));
         }
     }
 
@@ -200,9 +200,24 @@ public class SplashActivity extends AppCompatActivity {
                             } else {
                                 team1 = score.split("[0-9]")[0].trim();
                             }
-                            if (winner_line_match.find()) {
+                            /*if (winner_line_match.find()) {
                                 winner_line = "Winner: " + winner_line_match.group(1).replace("*", "") + " Minutes";
+                            } else {
+                                winner_line_match = Pattern.compile("Winner:(.*?)\n").matcher(self_text);
+                                if (winner_line_match.find()) {
+                                    String winnerline = winner_line_match.group(1).replace("*", "");
+                                    winnerline = winnerline.replace("m", "");
+                                    winner_line = "Winner: " + winnerline + " Minutes";
+
+                                } else {
+                                    winner_line_match = Pattern.compile("Winner:(.*?)").matcher(self_text);
+                                    if (winner_line_match.find()) {
+
+                                    }
+                                }
                             }
+                            winner_line = Objects.requireNonNull(winner_line).replace("  ", "");*/
+                            winner_line = "Winner: " + getWinner(score.trim());
                             System.out.println("Team1: " + team1);
                             System.out.println("Team2: " + team2);
                             System.out.println("Winner line: " + winner_line);
@@ -231,6 +246,16 @@ public class SplashActivity extends AppCompatActivity {
             return recyclerItemArrayList;
         }
 
+    }
+
+    private String getWinner(String score_line) {
+        String winning_team = null;
+        if (score_line.contains("1-0")) {
+            winning_team = score_line.substring(0, score_line.indexOf("1"));
+        } else if (score_line.contains("0-1")) {
+            winning_team = score_line.substring(score_line.lastIndexOf("1") + 1);
+        }
+        return winning_team;
     }
 
     private int getTeam1Logo(String team1, String week_region) {
