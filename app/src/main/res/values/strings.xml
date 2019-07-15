@@ -29,4 +29,7 @@
     <string name="turn_off_match_results_notifications">Turn off Match Results Notifications</string>
     <string name="open_match_details">Open Match Details</string>
     <string name="tap_to_see_winner">Tap to see winner</string>
+    <string name="bigger_version_of_image_tapped">Bigger version of image tapped</string>
+    <string name="back_arrow">back arrow</string>
+    <string name="download_icon">Download Icon</string>
 </resources>

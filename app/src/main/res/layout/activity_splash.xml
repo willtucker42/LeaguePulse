@@ -29,7 +29,8 @@
         android:layout_height="wrap_content"
         android:text="Version 1.0.0"
         android:layout_centerHorizontal="true"
-        android:fontFamily="@font/sansation_regular"
+        android:fontFamily="@font/titilliumregular"
         android:layout_marginBottom="2dp"
-        android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        tools:ignore="HardcodedText" />
 </RelativeLayout>

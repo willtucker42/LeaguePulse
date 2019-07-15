@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     final Fragment settingsFragment = new SettingsFragment();
     final Fragment aboutFragment = new AboutFragment();
     final FragmentManager fManager = getSupportFragmentManager();
+    private static final String TAG = "MainActivity";
 
     Fragment activeFragment = null;
 
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             fManager.beginTransaction().add(R.id.main_frame_layout, homeFragment, "1").commit();
             activeFragment = homeFragment;
         } else {
-            System.out.println("ACTIVE FRAGMENT IS NOT NULL IN HERE1");
+            Log.e(TAG,"ACTIVE FRAGMENT IS NOT NULL IN HERE1");
             fManager.beginTransaction().hide(activeFragment).show(activeFragment).commit();
         }
 
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         /*getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
                 new HomeFragment()).commit();*/
+    }
+    public BottomNavigationView getBotNavView(){
+        return findViewById(R.id.bottom_navigation);
     }
 
    /* @Override

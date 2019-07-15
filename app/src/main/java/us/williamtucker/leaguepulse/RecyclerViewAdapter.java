@@ -9,12 +9,16 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -235,8 +239,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     }
                 });
-                Picasso.get().load(currentItem.getmTeam1_logo()).placeholder(R.drawable.placeholder2).into(viewHolder.team1_logo);
-                Picasso.get().load(currentItem.getmTeam2_logo()).placeholder(R.drawable.placeholder2).into(viewHolder.team2_logo);
+                Picasso.get().load(currentItem.getmTeam1_logo()).placeholder(R.drawable.placeholder2)
+                        .into(viewHolder.team1_logo);
+                Picasso.get().load(currentItem.getmTeam2_logo()).placeholder(R.drawable.placeholder2)
+                        .into(viewHolder.team2_logo);
                 //viewHolder.team1_logo.setImageResource(currentItem.getmTeam1_logo());
                 //viewHolder.team2_logo.setImageResource(currentItem.getmTeam2_logo());
             }
@@ -246,7 +252,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         // Log.i(TAG, "bindView time: " + (System.currentTimeMillis() - startTime));
     }
 
-    private void setMedia(String media_type, String media_url, TwitterViewHolder viewHolder,
+    private void setMedia(String media_type, final String media_url, TwitterViewHolder viewHolder,
                           RecyclerItem currentItem) {
         SimpleExoPlayer exoPlayer;
         Uri uri;
@@ -257,6 +263,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 //.resize(1920,1080).onlyScaleDown()
                 Picasso.get().load(media_url)
                         .placeholder(R.drawable.placeholder2).into(viewHolder.picture_imageview);
+                viewHolder.picture_imageview.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        System.out.println("ARE WE LISTENING??????????????????????");
+                        AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("image_url", media_url);
+                        Fragment fragment = new ImageFragment();
+                        fragment.setArguments(bundle);
+                        /*activity.getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.main_frame_layout, fragment, "IMAGE_FRAGMENT")
+                                .commit();*/
+                        activity.getSupportFragmentManager().beginTransaction()
+                                .add(R.id.main_frame_layout,fragment,"IMAGE_FRAGMENT").commit();
+
+                    }
+                });
                 viewHolder.picture_imageview.setVisibility(View.VISIBLE);
                 //Glide.with(context).load(media_url).into(viewHolder.picture_imageview)
             } catch (Exception e) {

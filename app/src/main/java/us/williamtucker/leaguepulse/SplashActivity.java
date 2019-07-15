@@ -47,6 +47,8 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         FirebaseMessaging.getInstance().subscribeToTopic("reddit_updates");
         FirebaseMessaging.getInstance().subscribeToTopic("twitter_updates");
+        double test = 2;
+        System.out.println(test * (2 + 1.5));
         loadData();
         GetRedditData getRedditData = new GetRedditData();
         getRedditData.execute();
