@@ -32,4 +32,12 @@
     <string name="bigger_version_of_image_tapped">Bigger version of image tapped</string>
     <string name="back_arrow">back arrow</string>
     <string name="download_icon">Download Icon</string>
+    <string name="lp_logo">LP Logo</string>
+
+    <string name="about_league_pulse">League Pulse is a League of Legends content and news aggregator that
+        primarily targets content that is receiving higher than average engagement from Twitter
+        and Reddit.</string>
+    <string name="coming_soon_text">Coming soon:   Youtube Trending Content Twitch \nTrending Content Ability to comment on Reddit posts from app Ability to reply to Tweets from app Ability to filter trending list Track more subreddits and Twitter accounts Night Mode</string>
+    <string name="contact">Contact: info@leaguepulse.us</string>
+
 </resources>

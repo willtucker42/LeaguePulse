@@ -1,10 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/about"
-    android:textSize="30sp"
-    android:layout_centerInParent="true"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="#FFFFFF"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/lp_logo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="20sp"
+        android:contentDescription="@string/lp_logo"
+        android:src="@drawable/league_pulse_v1_updated_smaller" />
+
+    <TextView
+        android:id="@+id/about_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lp_logo"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/titilliumregular"
+        android:text="@string/about_league_pulse"
+        android:textAlignment="center"
+        android:textColor="#5c5c5c"
+        android:textSize="20sp" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/about_text"
+        android:layout_marginTop="15dp"
+        android:background="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/coming_soon_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/titilliumregular"
+        android:text="Coming soon:\nYoutube Trending Content \nTwitch Trending Content\n Ability to comment on Reddit posts from app \nAbility to reply to Tweets from app \nAbility to filter trending list\n Track more subreddits and Twitter accounts\n Night Mode"
+        android:textAlignment="center"
+        android:textColor="#5c5c5c"
+        android:textSize="18.5sp" />
+
+    <TextView
+        android:id="@+id/contact_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/contact"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="5dp"
+        android:fontFamily="@font/titilliumregular"
+        android:textSize="14sp"
+        android:textColor="@color/colorPrimary"/>
 </RelativeLayout>

@@ -196,7 +196,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 System.out.print("running setmedia for: " + currentItem.getmTwitter_name() + "--");
                 viewHolder.video_view.setVisibility(View.GONE);
                 viewHolder.picture_imageview.setVisibility(View.GONE);
-                setMedia(media_type, currentItem.getmTwitter_media_url(), viewHolder, currentItem);
+                setMedia(media_type, currentItem.getmTwitter_media_url(), viewHolder, currentItem,
+                        currentItem.getmTwitter_name());
 
                 viewHolder.self_text.setText(currentItem.getmSelf_text());
                 viewHolder.twitter_handle.setText(currentItem.getmTwitter_handle());
@@ -253,7 +254,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void setMedia(String media_type, final String media_url, TwitterViewHolder viewHolder,
-                          RecyclerItem currentItem) {
+                          RecyclerItem currentItem, final String twitter_name) {
         SimpleExoPlayer exoPlayer;
         Uri uri;
         if (media_type.equals("photo") && !media_url.equals("")) {
@@ -266,10 +267,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 viewHolder.picture_imageview.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        System.out.println("ARE WE LISTENING??????????????????????");
                         AppCompatActivity activity = (AppCompatActivity) view.getContext();
                         Bundle bundle = new Bundle();
                         bundle.putString("image_url", media_url);
+                        bundle.putString("twitter_name", twitter_name);
                         Fragment fragment = new ImageFragment();
                         fragment.setArguments(bundle);
                         /*activity.getSupportFragmentManager().beginTransaction()
