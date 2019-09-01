@@ -39,5 +39,8 @@
         and Reddit.</string>
     <string name="coming_soon_text">Coming soon:   Youtube Trending Content Twitch \nTrending Content Ability to comment on Reddit posts from app Ability to reply to Tweets from app Ability to filter trending list Track more subreddits and Twitter accounts Night Mode</string>
     <string name="contact">Contact: info@leaguepulse.us</string>
+    <string name="send_bug_report">Send bug report</string>
+    <string name="submit_a_suggestion">Submit a suggestion</string>
+    <string name="feedback_or_suggestions_are_appreciated">Feedback or suggestions are appreciated!</string>
 
 </resources>

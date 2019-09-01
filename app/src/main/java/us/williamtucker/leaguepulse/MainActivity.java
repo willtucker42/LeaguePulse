@@ -1,18 +1,30 @@
 package us.williamtucker.leaguepulse;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.leagepulse.leaguepulse.R;
+import com.parse.ParseException;
+import com.parse.ParseObject;
 
 public class MainActivity extends AppCompatActivity {
     final Fragment homeFragment = new HomeFragment();
@@ -39,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             fManager.beginTransaction().add(R.id.main_frame_layout, homeFragment, "1").commit();
             activeFragment = homeFragment;
         } else {
-            Log.e(TAG,"ACTIVE FRAGMENT IS NOT NULL IN HERE1");
+            Log.e(TAG, "ACTIVE FRAGMENT IS NOT NULL IN HERE1");
             fManager.beginTransaction().hide(activeFragment).show(activeFragment).commit();
         }
 
@@ -48,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
         /*getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
                 new HomeFragment()).commit();*/
     }
-    public BottomNavigationView getBotNavView(){
+
+    public BottomNavigationView getBotNavView() {
         return findViewById(R.id.bottom_navigation);
     }
 
@@ -57,6 +70,97 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.bottom_nav, menu);
         return true;
     }*/
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.send_bug_report:
+                androidx.appcompat.app.AlertDialog.Builder builder = new
+                        androidx.appcompat.app.AlertDialog.Builder(MainActivity.this);
+
+                //AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                //AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                final View alertView = getLayoutInflater().inflate(R.layout.send_bug_report_laout,
+                        null);
+                builder.setTitle("Report a bug");
+
+                builder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i("Send email", "");
+                        ParseObject bug = new ParseObject("LeaguePulseReports");
+                        EditText bugText = alertView.findViewById(R.id.editText);
+                        final String bugDesc = bugText.getText().toString();
+                        bug.put("bug_reports", bugDesc);
+                        try {
+                            bug.save();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.dismiss();
+                        Toast.makeText(MainActivity.this, "Bug report sent.",
+                                Toast.LENGTH_LONG).show();
+                    }
+
+                });
+                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setView(alertView);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return true;
+            case R.id.send_suggestion:
+                androidx.appcompat.app.AlertDialog.Builder suggestion_builder = new
+                        androidx.appcompat.app.AlertDialog.Builder(MainActivity.this);
+
+                //AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                //AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                final View suggestion_alertView = getLayoutInflater().inflate(R.layout.send_bug_report_laout,
+                        null);
+                suggestion_builder.setTitle("Submit a suggestion");
+
+                suggestion_builder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.i("Send email", "");
+                        ParseObject suggestion = new ParseObject("LeaguePulseReports");
+                        EditText suggestion_text = suggestion_alertView.findViewById(R.id.editText);
+                        final String suggestion_desc = suggestion_text.getText().toString();
+                        suggestion.put("suggestions", suggestion_desc);
+                        try {
+                            suggestion.save();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.dismiss();
+                        Toast.makeText(MainActivity.this, "Suggestion sent!",
+                                Toast.LENGTH_LONG).show();
+                    }
+
+                });
+                suggestion_builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                suggestion_builder.setView(suggestion_alertView);
+                AlertDialog suggestion_dialog = suggestion_builder.create();
+                suggestion_dialog.show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {

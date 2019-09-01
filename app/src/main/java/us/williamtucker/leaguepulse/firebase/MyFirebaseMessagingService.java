@@ -22,6 +22,8 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.leagepulse.leaguepulse.R;
 
+import java.util.Date;
+
 import us.williamtucker.leaguepulse.SplashActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -254,6 +256,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(channel);
         }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify((int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE) /* ID of notification */, notificationBuilder.build());
     }
 }

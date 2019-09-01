@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import com.leagepulse.leaguepulse.R;
 
@@ -27,6 +30,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import us.williamtucker.leaguepulse.data.RecyclerItem;
 import us.williamtucker.leaguepulse.data.RedditPHP;
+import us.williamtucker.leaguepulse.data.RedditTwitterPHP;
+import us.williamtucker.leaguepulse.data.TwitterPHP;
 import us.williamtucker.leaguepulse.data.redditdata.datamodel.Post;
 
 import com.google.gson.Gson;
@@ -40,10 +45,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
-import java.util.TimeZone;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,6 +88,10 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void initializeVariables(final View root_view) {
+        String[] spinner_array = new String[]{"Reddit & Twitter", "Reddit Only", "Twitter Only"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+                android.R.layout.simple_spinner_item, spinner_array);
+        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         Toolbar toolbar = root_view.findViewById(R.id.home_toolbar);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Trending");
@@ -107,9 +113,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         protected RecyclerViewAdapter doInBackground(View... views) {
             try {
                 refreshLayout.setRefreshing(true);
+                System.out.println("here");
                 adapter = new RecyclerViewAdapter(recyclerItems, getActivity());
-            }catch (Exception e){
-                Log.e(TAG,"WAAAACK");
+                System.out.println("here2");
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
             }
             return adapter;
         }
@@ -128,30 +136,248 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
-
-    private void initRecyclerLists(View root_view) {
-        //pretty sure I dont need these: 6/8/19 delete if 2 weeks after this date
-        initRecyclerView(root_view);
-    }
-
-    private void initRecyclerView(View root_view) {
-        //pretty sure I dont need these: 6/8/19 delete if 2 weeks after this date
-        Log.d(TAG, "initRecyclerView");
-
-        RecyclerView recyclerView = root_view.findViewById(R.id.home_recyclerview);
-        adapter = new RecyclerViewAdapter(recyclerItems, getActivity());
-        System.out.println("Setting adapter");
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    }
-
     @Override
     public void onRefresh() {
-        GetRedditData getRedditData = new GetRedditData();
-        getRedditData.execute();
+        GetRedditTwitterData getRedditTwitterData = new GetRedditTwitterData();
+        getRedditTwitterData.execute();
+    }
+
+    private class GetTwitterData extends AsyncTask<String, Void, ArrayList<RecyclerItem>> {
+        @Override
+        protected void onPostExecute(ArrayList<RecyclerItem> recyclerItems1) {
+            recyclerItems = recyclerItems1;
+            BindRecyclerData bindRecyclerData = new BindRecyclerData();
+            bindRecyclerData.execute();
+        }
+
+        @Override
+        protected ArrayList<RecyclerItem> doInBackground(String... strings) {
+            recyclerItems.clear();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://getonlytrendingtwitter.us-west-1.elasticbeanstalk.com/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            TwitterPHP twitterPHP = retrofit.create(TwitterPHP.class);
+
+            Call<List<Post>> call = twitterPHP.getData();
+            Response<List<Post>> response = null;
+            try {
+                response = call.execute();
+            } catch (IOException e) {
+                Log.e(TAG, "Catch: " + e.toString());
+            }
+            Calendar cal = Calendar.getInstance();
+            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm a");
+            simpleDateFormat.setTimeZone(cal.getTimeZone());
+            final DecimalFormat d_format = new DecimalFormat("#.#");
+            final ArrayList<RecyclerItem> recyclerItemArrayList = new ArrayList<>();
+            assert response != null;
+            if (!response.isSuccessful()) {
+                //not successful
+                Log.e(TAG, String.valueOf(response.code()));
+                return null;
+            }
+            List<Post> posts = response.body();
+            assert posts != null;
+            System.out.println("Posts size: " + posts.size());
+            for (Post post : posts) {
+                String self_text = post.getSelf_text();
+                Date date = new Date(post.getCreated_utc() * 1000L);
+                String media_type = post.getMedia_type();
+                String score, team1 = null, team2 = null, winner_line = null,
+                        title = post.getTitle(), week_region = null;
+
+                String profile_pic_url = post.getUser_profile_pic_url();
+                if (profile_pic_url != null) {
+                    profile_pic_url = profile_pic_url.replace("400x400", "200x200");
+                }
+                if (media_type == null) {
+                    media_type = "";
+                }
+                if (self_text.equals("")) {
+                    recyclerItemArrayList.add(new RecyclerItem(post.getTitle(), post.getUrl(),
+                            simpleDateFormat.format(date),
+                            String.valueOf(d_format.format(post.getTrending_level())),
+                            "yes", post.getPermalink(),
+                            "@" + post.getTwitter_handle(), post.getTwitter_name(),
+                            post.getTwitter_media_url() == null ? "" : post.getTwitter_media_url(),
+                            media_type, profile_pic_url, "", "", "",
+                            "", 0, 0));
+                } else {
+                    if (self_text.contains("---\n\n###MATCH 1:") && self_text.contains("postmatch.team")
+                            && (title.contains("LEC") || title.contains("LCS"))) {
+                        Matcher matcher = Pattern.compile("---\n\n###(.*?)\n").matcher(self_text);
+                        Matcher winner_line_match = Pattern.compile("Winner:(.*?)m]").matcher(self_text);
+                        Matcher matcher2 = Pattern.compile("/ (.*?) /").matcher(title);
+                        if (matcher2.find()) {
+                            week_region = matcher2.group(1);
+                        }
+                        if (matcher.find()) {
+                            score = matcher.group().substring(8);
+                            if (score.contains("(")) {
+                                score = score.substring(0, score.indexOf("(") + 1);
+                            }
+                            score = score.replaceAll("[()\\[\\]{}]", "");
+                            //score_line = score;
+                            System.out.println(score.trim());
+                            team2 = score.substring(score.indexOf("-") + 3).trim();
+                            if (!team2.contains("G2") && score.contains("G2")) {
+                                team1 = "G2 Esports";
+                            } else if (!team2.contains("100") && score.contains("100")) {
+                                team1 = "100 Thieves";
+                            } else {
+                                team1 = score.split("[0-9]")[0].trim();
+                            }
+                            if (winner_line_match.find()) {
+                                winner_line = "Winner: " + winner_line_match.group(1).replace("*", "") + " Minutes";
+                            }
+                            System.out.println("Team1: " + team1);
+                            System.out.println("Team2: " + team2);
+                            System.out.println("Winner line: " + winner_line);
+                        }
+
+                        //System.out.println(self_text.substring(self_text.indexOf("---\n\n###")+1));
+                    } else {
+                        System.out.println("Doesn't");
+                    }
+
+                    recyclerItemArrayList.add(new RecyclerItem(post.getTitle(), self_text,
+                            simpleDateFormat.format(date),
+                            String.valueOf(d_format.format(post.getTrending_level())),
+                            "no", post.getPermalink(),
+                            "@" + post.getTwitter_handle(), post.getTwitter_name(),
+                            post.getTwitter_media_url() == null ? "" : post.getTwitter_media_url(),
+                            post.getMedia_type() == null ? "" : post.getMedia_type(),
+                            profile_pic_url, team1 == null ? "" : team1, team2 == null ? "" : team2,
+                            winner_line == null ? "" : winner_line,
+                            week_region == null ? "" : week_region, getTeamLogo(team1, week_region),
+                            getTeamLogo(team2, week_region)));
+                }
+                //System.out.println("Post text: " + post.getSelf_text());
+            }
+            return recyclerItemArrayList;
+        }
     }
 
     private class GetRedditData extends AsyncTask<String, Void, ArrayList<RecyclerItem>> {
+        @Override
+        protected void onPostExecute(ArrayList<RecyclerItem> recyclerItems1) {
+            recyclerItems = recyclerItems1;
+            BindRecyclerData bindRecyclerData = new BindRecyclerData();
+            bindRecyclerData.execute();
+        }
+
+        @Override
+        protected ArrayList<RecyclerItem> doInBackground(String... strings) {
+
+            recyclerItems.clear();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://getonlytrendingreddit.us-west-1.elasticbeanstalk.com/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            RedditPHP redditPHP = retrofit.create(RedditPHP.class);
+
+            Call<List<Post>> call = redditPHP.getData();
+            Response<List<Post>> response = null;
+            try {
+                response = call.execute();
+            } catch (IOException e) {
+                Log.e(TAG, "Catch: " + e.toString());
+            }
+            Calendar cal = Calendar.getInstance();
+            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm a");
+            simpleDateFormat.setTimeZone(cal.getTimeZone());
+            final DecimalFormat d_format = new DecimalFormat("#.#");
+            final ArrayList<RecyclerItem> recyclerItemArrayList = new ArrayList<>();
+            assert response != null;
+            if (!response.isSuccessful()) {
+                //not successful
+                Log.e(TAG, String.valueOf(response.code()));
+                return null;
+            }
+            List<Post> posts = response.body();
+            assert posts != null;
+            System.out.println("Posts size: " + posts.size());
+            for (Post post : posts) {
+                String self_text = post.getSelf_text();
+                Date date = new Date(post.getCreated_utc() * 1000L);
+                String media_type = post.getMedia_type();
+                String score, team1 = null, team2 = null, winner_line = null,
+                        title = post.getTitle(), week_region = null;
+
+                String profile_pic_url = post.getUser_profile_pic_url();
+                if (profile_pic_url != null) {
+                    profile_pic_url = profile_pic_url.replace("400x400", "200x200");
+                }
+                if (media_type == null) {
+                    media_type = "";
+                }
+                if (self_text.equals("")) {
+                    recyclerItemArrayList.add(new RecyclerItem(post.getTitle(), post.getUrl(),
+                            simpleDateFormat.format(date),
+                            String.valueOf(d_format.format(post.getTrending_level())),
+                            "yes", post.getPermalink(),
+                            "@" + post.getTwitter_handle(), post.getTwitter_name(),
+                            post.getTwitter_media_url() == null ? "" : post.getTwitter_media_url(),
+                            media_type, profile_pic_url, "", "", "",
+                            "", 0, 0));
+                } else {
+                    if (self_text.contains("---\n\n###MATCH 1:") && self_text.contains("postmatch.team")
+                            && (title.contains("LEC") || title.contains("LCS"))) {
+                        Matcher matcher = Pattern.compile("---\n\n###(.*?)\n").matcher(self_text);
+                        Matcher winner_line_match = Pattern.compile("Winner:(.*?)m]").matcher(self_text);
+                        Matcher matcher2 = Pattern.compile("/ (.*?) /").matcher(title);
+                        if (matcher2.find()) {
+                            week_region = matcher2.group(1);
+                        }
+                        if (matcher.find()) {
+                            score = matcher.group().substring(8);
+                            if (score.contains("(")) {
+                                score = score.substring(0, score.indexOf("(") + 1);
+                            }
+                            score = score.replaceAll("[()\\[\\]{}]", "");
+                            //score_line = score;
+                            System.out.println(score.trim());
+                            team2 = score.substring(score.indexOf("-") + 3).trim();
+                            if (!team2.contains("G2") && score.contains("G2")) {
+                                team1 = "G2 Esports";
+                            } else if (!team2.contains("100") && score.contains("100")) {
+                                team1 = "100 Thieves";
+                            } else {
+                                team1 = score.split("[0-9]")[0].trim();
+                            }
+                            if (winner_line_match.find()) {
+                                winner_line = "Winner: " + winner_line_match.group(1).replace("*", "") + " Minutes";
+                            }
+                            System.out.println("Team1: " + team1);
+                            System.out.println("Team2: " + team2);
+                            System.out.println("Winner line: " + winner_line);
+                        }
+
+                        //System.out.println(self_text.substring(self_text.indexOf("---\n\n###")+1));
+                    } else {
+                        System.out.println("Doesn't");
+                    }
+
+                    recyclerItemArrayList.add(new RecyclerItem(post.getTitle(), self_text,
+                            simpleDateFormat.format(date),
+                            String.valueOf(d_format.format(post.getTrending_level())),
+                            "no", post.getPermalink(),
+                            "@" + post.getTwitter_handle(), post.getTwitter_name(),
+                            post.getTwitter_media_url() == null ? "" : post.getTwitter_media_url(),
+                            post.getMedia_type() == null ? "" : post.getMedia_type(),
+                            profile_pic_url, team1 == null ? "" : team1, team2 == null ? "" : team2,
+                            winner_line == null ? "" : winner_line,
+                            week_region == null ? "" : week_region, getTeamLogo(team1, week_region),
+                            getTeamLogo(team2, week_region)));
+                }
+                //System.out.println("Post text: " + post.getSelf_text());
+            }
+            return recyclerItemArrayList;
+        }
+    }
+
+    private class GetRedditTwitterData extends AsyncTask<String, Void, ArrayList<RecyclerItem>> {
 
         private static final String TAG = "GetRedditDataAsyncTask";
 
@@ -169,9 +395,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     .baseUrl("http://gettrendingreddittwitter.us-west-1.elasticbeanstalk.com/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
-            RedditPHP redditPHP = retrofit.create(RedditPHP.class);
+            RedditTwitterPHP redditTwitterPHP = retrofit.create(RedditTwitterPHP.class);
 
-            Call<List<Post>> call = redditPHP.getData();
+            Call<List<Post>> call = redditTwitterPHP.getData();
             Response<List<Post>> response = null;
             try {
                 response = call.execute();

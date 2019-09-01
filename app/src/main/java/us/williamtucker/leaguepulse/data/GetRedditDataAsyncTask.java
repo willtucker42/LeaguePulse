@@ -30,9 +30,9 @@ public class GetRedditDataAsyncTask extends AsyncTask<String, Void, ArrayList<Ar
                 .baseUrl("http://leaguepulsereddit-env.pggnwbfn7t.us-west-1.elasticbeanstalk.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        RedditPHP redditPHP = retrofit.create(RedditPHP.class);
+        RedditTwitterPHP redditTwitterPHP = retrofit.create(RedditTwitterPHP.class);
 
-        Call<List<Post>> call = redditPHP.getData();
+        Call<List<Post>> call = redditTwitterPHP.getData();
         Response<List<Post>> response = null;
         try {
             response = call.execute();

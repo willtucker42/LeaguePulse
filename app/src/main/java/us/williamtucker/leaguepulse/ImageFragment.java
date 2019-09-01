@@ -41,7 +41,7 @@ public class ImageFragment extends Fragment {
     private void initializeVariables(View root_view) {
         ImageView main_image = root_view.findViewById(R.id.big_image_view);
         ImageView back_arrow = root_view.findViewById(R.id.back_arrow_img);
-        ImageView download_icon = root_view.findViewById(R.id.download_icon_img);
+        //ImageView download_icon = root_view.findViewById(R.id.download_icon_img);
         String image_url = null;
         if (getArguments() != null) {
             image_url = getArguments().getString("image_url");
@@ -70,14 +70,7 @@ public class ImageFragment extends Fragment {
             }
         });
         final String finalImage_url = image_url;
-        download_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (getArguments() != null) {
-                    downloadImage(finalImage_url, getActivity(),getArguments().getString("twitter_name"));
-                }
-            }
-        });
+
     }
     private static void downloadImage(String image_url, Context context, String twitter_name){
         Random random = new Random();

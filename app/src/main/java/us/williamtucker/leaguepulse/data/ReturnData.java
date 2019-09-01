@@ -37,9 +37,9 @@ public class ReturnData {
                 .baseUrl("http://leaguepulsereddit-env.pggnwbfn7t.us-west-1.elasticbeanstalk.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        RedditPHP redditPHP = retrofit.create(RedditPHP.class);
+        RedditTwitterPHP redditTwitterPHP = retrofit.create(RedditTwitterPHP.class);
 
-        final Call<List<Post>> call = redditPHP.getData();
+        final Call<List<Post>> call = redditTwitterPHP.getData();
         final ArrayList<ArrayList<String>>[] listOfRedditPostLists = new ArrayList[]{new ArrayList<>()};
         final Thread thread1 = new Thread(new Runnable() {
             @Override
@@ -54,7 +54,7 @@ public class ReturnData {
         });
         thread1.start();
         return listOfRedditPostLists[0];
-        /*Call<List<Post>> call = redditPHP.getData();
+        /*Call<List<Post>> call = redditTwitterPHP.getData();
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {

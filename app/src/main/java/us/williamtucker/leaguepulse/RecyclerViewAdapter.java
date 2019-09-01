@@ -35,6 +35,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
@@ -174,7 +175,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     viewHolder.self_text.setText(self_text);
                 }
                 viewHolder.date_text.setText(currentItem.getmDate());
-                viewHolder.trending_level.setText(currentItem.getmTrending_level());
+                //viewHolder.trending_level.setText(currentItem.getmTrending_level());
                 viewHolder.post_title.setText(currentItem.getmPost_title());
                 viewHolder.goto_reddit_button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -314,8 +315,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 uri = Uri.parse(currentItem.getmTwitter_media_url());
                 exoPlayer = ExoPlayerFactory.newSimpleInstance(context, selector);
                 MediaSource mediaSource = new ExtractorMediaSource(uri, dataSourceFactory, extractorsFactory, null, null);
+                LoopingMediaSource loopSource = new LoopingMediaSource(mediaSource);
                 playerView.setPlayer(exoPlayer);
-                exoPlayer.prepare(mediaSource);
+                exoPlayer.prepare(loopSource);
                 exoPlayer.seekTo(0);
                 exoPlayer.setPlayWhenReady(true);
                 playerView.hideController();
@@ -344,13 +346,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView post_title;
         TextView self_text;
         TextView date_text;
-        TextView trending_level;
+       // TextView trending_level;
         Button goto_reddit_button;
         CardView parent_layout;
 
         RedditViewHolder(@NonNull View itemView) {
             super(itemView);
-            trending_level = itemView.findViewById(R.id.cv_trending_level);
+            //trending_level = itemView.findViewById(R.id.cv_trending_level);
             date_text = itemView.findViewById(R.id.cv_time_posted_text);
             self_text = itemView.findViewById(R.id.cv_self_text);
             post_title = itemView.findViewById(R.id.cv_post_title);
