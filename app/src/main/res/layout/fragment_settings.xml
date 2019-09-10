@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/mainscroll"
@@ -32,7 +33,7 @@
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/titilliiumbold"
                     android:text="@string/reddit_alerts"
-                    android:textColor="#000000"
+                    android:textColor="@color/titleColor"
                     android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -62,7 +63,6 @@
                         android:id="@+id/top_trending_reddit_radio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
                         android:buttonTint="@color/colorPrimary"
                         android:fontFamily="@font/titilliumregular"
                         android:paddingStart="10dp"
@@ -93,7 +93,7 @@
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/titilliiumbold"
                     android:text="@string/twitter_alerts"
-                    android:textColor="#000000"
+                    android:textColor="@color/titleColor"
                     android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -123,7 +123,6 @@
                         android:id="@+id/top_trending_twitter_radio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
                         android:buttonTint="@color/colorPrimary"
                         android:fontFamily="@font/titilliumregular"
                         android:paddingStart="10dp"
@@ -136,7 +135,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="15dp"
                     android:buttonTint="@color/colorPrimary"
                     android:paddingStart="10dp"
                     android:text="@string/receive_tweets_from_na_related_accounts"
@@ -149,7 +147,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
                     android:buttonTint="@color/colorPrimary"
                     android:paddingStart="10dp"
                     android:text="@string/receive_tweets_from_eu_related_accounts"
@@ -189,7 +186,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="15dp"
                     android:layout_marginEnd="10dp"
                     android:buttonTint="@color/colorPrimary"
                     android:fontFamily="@font/titilliumregular"
@@ -203,7 +199,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="15dp"
                     android:buttonTint="@color/colorPrimary"
                     android:fontFamily="@font/titilliumregular"
                     android:text="@string/turn_off_match_results_notifications"
@@ -211,7 +206,21 @@
                     app:layout_constraintTop_toBottomOf="@id/twitter_switch"
                     app:switchPadding="80dp" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/night_light_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/titilliumregular"
+                    android:text="@string/enable_night_mode"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:switchPadding="183dp" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"

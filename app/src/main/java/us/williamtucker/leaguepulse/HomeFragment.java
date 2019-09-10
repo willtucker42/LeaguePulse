@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +18,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -77,14 +81,34 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         SharedPreferences sharedPreferences = Objects.requireNonNull(this.getActivity()).getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("list", null);
-        Type type = new TypeToken<ArrayList<RecyclerItem>>() {
-        }.getType();
+        Type type = new TypeToken<ArrayList<RecyclerItem>>() {}.getType();
         recyclerItems = gson.fromJson(json, type);
         if (recyclerItems != null) {
             System.out.println("The list size is " + recyclerItems.size());
         } else {
             Log.e(TAG, "Array list is null");
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        System.out.println("\n\n In oncreateOptionsMenu");
+        MenuInflater inflater1 = Objects.requireNonNull(getActivity()).getMenuInflater();
+        inflater1.inflate(R.menu.search_menu, menu);
+        MenuItem item = menu.findItem(R.id.menuSearch);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void initializeVariables(final View root_view) {

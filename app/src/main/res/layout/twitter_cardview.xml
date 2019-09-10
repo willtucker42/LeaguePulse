@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
+    android:background="@color/background"
     android:elevation="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,7 +40,7 @@
             android:fontFamily="@font/titilliiumbold"
             android:scrollHorizontally="true"
             android:text="Player Name"
-            android:textColor="#000000"
+            android:textColor="@color/titleColor"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@id/tcv_profile_pic"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,7 +57,7 @@
             android:maxLines="1"
             android:scrollHorizontally="true"
             android:text="\@PlayerHandle"
-            android:textColor="#000000"
+            android:textColor="@color/titleColor"
             android:textSize="13sp"
             app:layout_constraintStart_toEndOf="@id/tcv_profile_pic"
             app:layout_constraintTop_toTopOf="parent"
@@ -67,13 +68,14 @@
             android:id="@+id/tcv_date_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="10dp"
             android:fontFamily="@font/titilliumregular"
             android:text="27-Apr-19 04:46 PM"
             android:textAlignment="textEnd"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textColor="@color/textColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -88,7 +90,7 @@
             android:maxLines="4"
             android:scrollHorizontally="true"
             android:text="Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self TextSelf TextSelf TextSelf Text Self Text Self Text Self Text Self TextSelf Text Self Text Self Text Self Text Self Text Se "
-            android:textColor="#515050"
+            android:textColor="@color/textColor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tcv_profile_pic"
             tools:ignore="HardcodedText" />

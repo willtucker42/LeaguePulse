@@ -42,5 +42,6 @@
     <string name="send_bug_report">Send bug report</string>
     <string name="submit_a_suggestion">Submit a suggestion</string>
     <string name="feedback_or_suggestions_are_appreciated">Feedback or suggestions are appreciated!</string>
+    <string name="enable_night_mode">Enable night mode</string>
 
 </resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#630D24</color>
+    <color name="twitterBlue">#38A1F3</color>
+    <color name="redditOrange">#FF3F18</color>
+    <color name="titleColor">#FFFFFF</color>
+    <color name="textColor">#ACACAC</color>
+    <color name="red">#580000</color>
+    <color name="cardBackground">#252525</color>
+    <color name="background">#000000</color>
+</resources>

@@ -1,11 +1,13 @@
 package us.williamtucker.leaguepulse;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
@@ -49,6 +51,7 @@ public class SettingsFragment extends Fragment {
         SwitchCompat reddit_switch = root_view.findViewById(R.id.reddit_switch);
         SwitchCompat twitter_switch = root_view.findViewById(R.id.twitter_switch);
         SwitchCompat match_results_switch = root_view.findViewById(R.id.match_results_switch);
+        SwitchCompat night_light_switch = root_view.findViewById(R.id.night_light_switch);
 
         if (Objects.requireNonNull(sharedPreferences.getString("reddit_alert_option", "top")).equals("all")) {
             reddit_radio_group.check(R.id.all_trending_reddit_radio);
@@ -85,6 +88,12 @@ public class SettingsFragment extends Fragment {
             match_results_switch.setChecked(false);
         } else {
             match_results_switch.setChecked(true);
+        }
+        System.out.println("Settings fragment night_light_enabled: " + sharedPreferences.getBoolean("night_light_enabled", false));
+        if (sharedPreferences.getBoolean("night_light_enabled", false)){
+            night_light_switch.setChecked(true);
+        }else{
+            night_light_switch.setChecked(false);
         }
         reddit_radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -182,6 +191,29 @@ public class SettingsFragment extends Fragment {
                     editor.putBoolean("receive_twitter_alerts", true);
                     editor.apply();
                 }
+            }
+        });
+        night_light_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked){
+                    System.out.println("Night light has been turned on");
+                    editor.putBoolean("night_light_enabled", true);
+                    editor.apply();
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+                    startActivity(new Intent(getActivity(), SplashActivity.class));
+                    Objects.requireNonNull(getActivity()).finish();
+                }else{
+                    System.out.println("Night light has been turned off");
+                    editor.putBoolean("night_light_enabled", false);
+                    editor.apply();
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
+                    startActivity(new Intent(getActivity(), SplashActivity.class));
+                    Objects.requireNonNull(getActivity()).finish();
+                }
+
             }
         });
     }

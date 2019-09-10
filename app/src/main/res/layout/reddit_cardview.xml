@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cv_parent_layout"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background"
     android:layout_margin="10dp"
     android:elevation="20dp">
 
@@ -30,7 +31,7 @@
             android:maxLines="3"
             android:scrollHorizontally="true"
             android:text="Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title"
-            android:textColor="#000000" />
+            android:textColor="@color/titleColor" />
 
         <TextView
             android:id="@+id/cv_self_text"
@@ -46,7 +47,7 @@
             android:maxLines="3"
             android:scrollHorizontally="true"
             android:text="Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self TextSelf TextSelf TextSelf Text Self Text Self Text Self Text Self TextSelf Text Self Text Self Text Self Text Self Text Se "
-            android:textColor="#515050" />
+            android:textColor="@color/textColor" />
 
 
 
@@ -81,7 +82,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="6dp"
                 android:fontFamily="@font/titilliumregular"
-                android:text="27-Apr-19 04:46 PM" />
+                android:text="27-Apr-19 04:46 PM"
+                android:textColor="@color/textColor"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

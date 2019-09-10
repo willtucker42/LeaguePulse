@@ -72,6 +72,7 @@ public class SplashActivity extends AppCompatActivity {
             editor.putBoolean("receive_match_alerts", true);
             editor.putBoolean("na_region_checked", true);
             editor.putBoolean("eu_region_checked", true);
+            editor.putBoolean("night_light_enabled", false);
             editor.apply();
         } else {
             System.out.println("Not null?!: ");
@@ -82,6 +83,7 @@ public class SplashActivity extends AppCompatActivity {
             System.out.println(sharedPreferences.getBoolean("receive_match_alerts", true));
             System.out.println(sharedPreferences.getBoolean("na_region_checked", true));
             System.out.println(sharedPreferences.getBoolean("eu_region_checked", true));
+            System.out.println("Night light setting: " + sharedPreferences.getBoolean("night_light_enabled", false));
         }
     }
 

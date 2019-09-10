@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:elevation="5dp">
+    android:elevation="5dp"
+    android:background="@color/background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pgcv_main_constraint_layout"
@@ -50,7 +51,7 @@
             android:scrollHorizontally="true"
             android:text="Team SoloMid vs. Cloud9"
             android:textAlignment="center"
-            android:textColor="#000000"
+            android:textColor="@color/titleColor"
             android:textSize="19sp"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toStartOf="@id/pgcv_team2_logo"
@@ -65,7 +66,7 @@
             android:fontFamily="@font/titilliiumbold"
             android:text="LCS 2019 Summer - Week 3"
             android:textAlignment="center"
-            android:textColor="#808184"
+            android:textColor="@color/textColor"
             android:textSize="15sp"
             app:layout_constraintEnd_toStartOf="@id/pgcv_team2_logo"
             app:layout_constraintStart_toEndOf="@id/pgcv_team1_logo"
