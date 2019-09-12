@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.util.Log;
 
@@ -35,7 +36,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SplashActivity extends AppCompatActivity {
     ArrayList<RecyclerItem> recyclerItemArrayList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +84,11 @@ public class SplashActivity extends AppCompatActivity {
             System.out.println(sharedPreferences.getBoolean("na_region_checked", true));
             System.out.println(sharedPreferences.getBoolean("eu_region_checked", true));
             System.out.println("Night light setting: " + sharedPreferences.getBoolean("night_light_enabled", false));
+           /* if (sharedPreferences.getBoolean("night_light_enabled", false)){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }*/
         }
     }
 

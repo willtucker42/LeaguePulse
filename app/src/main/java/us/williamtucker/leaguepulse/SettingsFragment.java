@@ -2,6 +2,7 @@ package us.williamtucker.leaguepulse;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,15 +12,19 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.leagepulse.leaguepulse.R;
 
 import java.util.Objects;
@@ -42,8 +47,11 @@ public class SettingsFragment extends Fragment {
        /// ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
        /// Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Customize Alerts");
         SharedPreferences sharedPreferences = Objects.requireNonNull(this.getActivity()).getSharedPreferences("shared preferences", MODE_PRIVATE);
-        final SharedPreferences.Editor editor = sharedPreferences.edit();
 
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+        ConstraintLayout settings_main_layout = root_view.findViewById(R.id.settings_main_layout);
+        TextView reddit_alerts_title = root_view.findViewById(R.id.reddit_alerts_title);
+        TextView twitter_alerts_title = root_view.findViewById(R.id.twitter_alerts_title);
         RadioGroup reddit_radio_group = root_view.findViewById(R.id.reddit_radio_group);
         RadioGroup twitter_radio_group = root_view.findViewById(R.id.twitter_radio_group);
         AppCompatCheckBox na_checkbox = root_view.findViewById(R.id.na_twitter_checkbox);
@@ -90,9 +98,39 @@ public class SettingsFragment extends Fragment {
             match_results_switch.setChecked(true);
         }
         System.out.println("Settings fragment night_light_enabled: " + sharedPreferences.getBoolean("night_light_enabled", false));
+        RadioButton all_reddit_radio = root_view.findViewById(R.id.all_trending_reddit_radio);
+        RadioButton top_reddit_radio = root_view.findViewById(R.id.top_trending_reddit_radio);
+        RadioButton all_twitter_radio = root_view.findViewById(R.id.all_trending_twitter_radio);
+        RadioButton top_twitter_radio = root_view.findViewById(R.id.top_trending_twitter_radio);
         if (sharedPreferences.getBoolean("night_light_enabled", false)){
+            Log.e("SETTINGS FRAGMENT", "TEST");
+            Log.e("SETTINGS FRAGMENT", "TEST");
+            Log.e("SETTINGS FRAGMENT", "TEST");
+            Log.e("SETTINGS FRAGMENT", "TEST");
+            Log.e("SETTINGS FRAGMENT", "TEST");
+            all_reddit_radio.setTextColor(Color.parseColor("#ACACAC"));
+            top_reddit_radio.setTextColor(Color.parseColor("#ACACAC"));
+            all_twitter_radio.setTextColor(Color.parseColor("#ACACAC"));
+            top_twitter_radio.setTextColor(Color.parseColor("#ACACAC"));
+            eu_checkbox.setTextColor(Color.parseColor("#ACACAC"));
+            na_checkbox.setTextColor(Color.parseColor("#ACACAC"));
+
+            settings_main_layout.setBackgroundColor(Color.parseColor("#000000"));
+            reddit_alerts_title.setTextColor(Color.parseColor("#FFFFFF"));
+            twitter_alerts_title.setTextColor(Color.parseColor("#FFFFFF"));
             night_light_switch.setChecked(true);
         }else{
+            all_reddit_radio.setTextColor(Color.parseColor("#000000"));
+            top_reddit_radio.setTextColor(Color.parseColor("#000000"));
+            all_twitter_radio.setTextColor(Color.parseColor("#000000"));
+            top_twitter_radio.setTextColor(Color.parseColor("#000000"));
+            match_results_switch.setTextColor(Color.parseColor("#000000"));
+            night_light_switch.setTextColor(Color.parseColor("#000000"));
+            reddit_switch.setTextColor(Color.parseColor("#000000"));
+            twitter_switch.setTextColor(Color.parseColor("#000000"));
+            eu_checkbox.setTextColor(Color.parseColor("#000000"));
+            na_checkbox.setTextColor(Color.parseColor("#000000"));
+            settings_main_layout.setBackgroundColor(Color.parseColor("#FFFFFF"));
             night_light_switch.setChecked(false);
         }
         reddit_radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -200,7 +238,12 @@ public class SettingsFragment extends Fragment {
                     System.out.println("Night light has been turned on");
                     editor.putBoolean("night_light_enabled", true);
                     editor.apply();
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    Log.e("SETTINGS FRAGMENT", "TEST1");
+                    Log.e("SETTINGS FRAGMENT", "TEST1");
+                    Log.e("SETTINGS FRAGMENT", "TEST1");
+                    Log.e("SETTINGS FRAGMENT", "TEST1");
+                    Log.e("SETTINGS FRAGMENT", "TEST1");
 
                     startActivity(new Intent(getActivity(), SplashActivity.class));
                     Objects.requireNonNull(getActivity()).finish();
@@ -208,7 +251,12 @@ public class SettingsFragment extends Fragment {
                     System.out.println("Night light has been turned off");
                     editor.putBoolean("night_light_enabled", false);
                     editor.apply();
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    Log.e("SETTINGS FRAGMENT", "TEST2");
+                    Log.e("SETTINGS FRAGMENT", "TEST2");
+                    Log.e("SETTINGS FRAGMENT", "TEST2");
+                    Log.e("SETTINGS FRAGMENT", "TEST2");
+                    Log.e("SETTINGS FRAGMENT", "TEST2");
+                    //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
                     startActivity(new Intent(getActivity(), SplashActivity.class));
                     Objects.requireNonNull(getActivity()).finish();
@@ -216,5 +264,6 @@ public class SettingsFragment extends Fragment {
 
             }
         });
+
     }
 }

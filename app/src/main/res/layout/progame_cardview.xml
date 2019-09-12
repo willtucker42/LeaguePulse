@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
     android:elevation="5dp"
-    android:background="@color/background">
+    android:background="#FFFFFF">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pgcv_main_constraint_layout"
@@ -51,7 +51,7 @@
             android:scrollHorizontally="true"
             android:text="Team SoloMid vs. Cloud9"
             android:textAlignment="center"
-            android:textColor="@color/titleColor"
+            android:textColor="#000000"
             android:textSize="19sp"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toStartOf="@id/pgcv_team2_logo"
@@ -66,7 +66,7 @@
             android:fontFamily="@font/titilliiumbold"
             android:text="LCS 2019 Summer - Week 3"
             android:textAlignment="center"
-            android:textColor="@color/textColor"
+            android:textColor="#515050"
             android:textSize="15sp"
             app:layout_constraintEnd_toStartOf="@id/pgcv_team2_logo"
             app:layout_constraintStart_toEndOf="@id/pgcv_team1_logo"
@@ -99,9 +99,9 @@
             app:layout_constraintTop_toBottomOf="@id/pgcv_week_region_text"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:paddingBottom="5dp"
-            android:textColor="@color/red"
-            app:rippleColor="@color/red"
-            app:strokeColor="@color/red"
+            android:textColor="#ff0000"
+            app:rippleColor="#ff0000"
+            app:strokeColor="#ff0000"
             android:text="@string/tap_to_see_winner" />
 
         <com.google.android.material.button.MaterialButton
@@ -114,13 +114,13 @@
             android:fontFamily="@font/titilliiumbold"
             android:text="@string/open_match_details"
             android:textAllCaps="false"
-            android:textColor="@color/colorPrimary"
+            android:textColor="#008577"
             android:textSize="13sp"
             app:cornerRadius="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/pgcv_team2_logo"
-            app:rippleColor="@color/redditOrange"
-            app:strokeColor="@color/colorPrimary"
+            app:rippleColor="#FF3F18"
+            app:strokeColor="#008577"
             app:strokeWidth="1dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

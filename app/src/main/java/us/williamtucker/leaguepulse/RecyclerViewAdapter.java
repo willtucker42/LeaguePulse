@@ -3,8 +3,10 @@ package us.williamtucker.leaguepulse;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
@@ -44,6 +46,7 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.leagepulse.leaguepulse.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -52,6 +55,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import us.williamtucker.leaguepulse.data.RecyclerItem;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapter";
@@ -72,7 +76,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
     private ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
     private BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-
+    private boolean dark_theme_enabled;
+    SharedPreferences mSharedPreferences;
     @Override
     public int getItemViewType(int position) {
 
@@ -98,9 +103,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }*/
     }
 
-    RecyclerViewAdapter(ArrayList<RecyclerItem> recyclerItems, Context context) {
+    RecyclerViewAdapter(ArrayList<RecyclerItem> recyclerItems, Context context, Boolean dark_theme) {
         bitmapOptions.inJustDecodeBounds = true;
         mRecycleritems = recyclerItems;
+        dark_theme_enabled = dark_theme;
         this.context = context;
     }
 
@@ -152,13 +158,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder1, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder1, int position) {
         long startTime = System.currentTimeMillis();
         final RecyclerItem currentItem = mRecycleritems.get(position);
         //System.out.println("re onbindviewholder");
         try {
             if (viewHolder1.getItemViewType() == VIEW_TYPE_REDDIT) {
                 RedditViewHolder viewHolder = (RedditViewHolder) viewHolder1;
+                if (dark_theme_enabled){
+                    viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#252525"));
+                    viewHolder.post_title.setTextColor(Color.parseColor("#FFFFFF"));
+                    viewHolder.self_text.setTextColor(Color.parseColor("#ACACAC"));
+                    viewHolder.date_text.setTextColor(Color.parseColor("#ACACAC"));
+                    System.out.println("Dark theme enabled for RedditCardView");
+                }else{
+                        viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                        viewHolder.post_title.setTextColor(Color.parseColor("#000000"));
+                        viewHolder.self_text.setTextColor(Color.parseColor("#515050"));
+                        viewHolder.date_text.setTextColor(Color.parseColor("#515050"));
+                }
                 String self_text = currentItem.getmSelf_text();
                 //viewHolder.author.setText(authors.get(position));
                 // System.out.println("Clickable link? " + clickable_link.get(viewHolder.getAdapterPosition()));
@@ -180,15 +198,34 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 viewHolder.goto_reddit_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+                        Bundle params = new Bundle();
                         String link = "https://www.reddit.com" + currentItem.getmPermalink();
+                        params.putString("GoToRedditButton", link);
+                        firebaseAnalytics.logEvent("linkTapped", params);
+
                         Uri uri = Uri.parse(link); // missing 'http://' will cause crashed
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         context.startActivity(intent);
                     }
                 });
             } else if (viewHolder1.getItemViewType() == VIEW_TYPE_TWITTER) {
-                System.out.print(currentItem.getmTwitter_name() + " " + currentItem.getmMedia_type());
                 TwitterViewHolder viewHolder = (TwitterViewHolder) viewHolder1;
+                if (dark_theme_enabled){
+                    System.out.println("Dark theme enabled for TwitterCardView");
+                    viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#252525"));
+                    viewHolder.twitter_name.setTextColor(Color.parseColor("#FFFFFF"));
+                    viewHolder.twitter_handle.setTextColor(Color.parseColor("#FFFFFF"));
+                    viewHolder.self_text.setTextColor(Color.parseColor("#ACACAC"));
+                    viewHolder.date_text.setTextColor(Color.parseColor("#ACACAC"));
+                }else{
+                    viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    viewHolder.twitter_name.setTextColor(Color.parseColor("#000000"));
+                    viewHolder.twitter_handle.setTextColor(Color.parseColor("#000000"));
+                    viewHolder.self_text.setTextColor(Color.parseColor("#515050"));
+                    viewHolder.date_text.setTextColor(Color.parseColor("#515050"));
+                }
+                System.out.print(currentItem.getmTwitter_name() + " " + currentItem.getmMedia_type());
                 Picasso.get().load(currentItem.getmUser_profile_pic_url())
                         .placeholder(R.drawable.ic_person_black_24dp)
                         .into(viewHolder.profile_pic);
@@ -207,7 +244,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 viewHolder.goto_twitter_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+                        Bundle params = new Bundle();
                         String link = currentItem.getmPermalink();
+                        params.putString("GoToTwitterButton", link);
+                        firebaseAnalytics.logEvent("linkTapped", params);
                         Uri uri = Uri.parse(link);
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         context.startActivity(intent);
@@ -215,6 +256,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 });
             } else {
                 final ProGameViewHolder viewHolder = (ProGameViewHolder) viewHolder1;
+                if (dark_theme_enabled){
+                    System.out.println("Dark theme enabled for ProGameCardView");
+                    viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#252525"));
+                    viewHolder.title_text.setTextColor(Color.parseColor("#FFFFFF"));
+                    viewHolder.week_region_text.setTextColor(Color.parseColor("#ACACAC"));
+                    viewHolder.winner_line_text.setTextColor(Color.parseColor("#FFFFFF"));
+                }else{
+
+                    viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    viewHolder.title_text.setTextColor(Color.parseColor("#000000"));
+                    viewHolder.week_region_text.setTextColor(Color.parseColor("#515050"));
+                    viewHolder.winner_line_text.setTextColor(Color.parseColor("#000000"));
+                }
                 viewHolder.winner_line_text.setText(currentItem.getmWinner_line());
                 viewHolder.week_region_text.setText(currentItem.getmWeek_region());
                 viewHolder.show_winner.setVisibility(View.VISIBLE);
@@ -397,6 +451,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView week_region_text;
         TextView winner_line_text;
         ConstraintLayout constraintLayout;
+        CardView parent_layout;
 
         ProGameViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -408,6 +463,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             title_text = itemView.findViewById(R.id.pgcv_title);
             week_region_text = itemView.findViewById(R.id.pgcv_week_region_text);
             winner_line_text = itemView.findViewById(R.id.pgcv_winner_line);
+            parent_layout = itemView.findViewById(R.id.pgcv_parent_layout);
         }
     }
 }

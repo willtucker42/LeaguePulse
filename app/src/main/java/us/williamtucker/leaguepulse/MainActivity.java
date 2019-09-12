@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.leagepulse.leaguepulse.R;
@@ -32,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     final Fragment aboutFragment = new AboutFragment();
     final FragmentManager fManager = getSupportFragmentManager();
     private static final String TAG = "MainActivity";
-
     Fragment activeFragment = null;
 
     @Override
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         System.out.println("Main activity oncreate");
+        RelativeLayout activity_main_layout= findViewById(R.id.activity_main_layout);;
         if (activeFragment == null) {
             System.out.println("IN HERE1");
             fManager.beginTransaction().add(R.id.main_frame_layout, aboutFragment, "3")
@@ -57,6 +59,13 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+
+        if (getSharedPreferences("shared preferences", MODE_PRIVATE)
+                .getBoolean("night_light_enabled", false)){
+            bottomNavigationView.setBackgroundColor(Color.parseColor("#252525"));
+        }else{
+            bottomNavigationView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
         /*getSupportFragmentManager().beginTransaction().replace(R.id.main_frame_layout,
                 new HomeFragment()).commit();*/
     }

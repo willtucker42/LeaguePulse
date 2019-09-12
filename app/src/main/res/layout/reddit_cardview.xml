@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cv_parent_layout"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/background"
+    android:background="#FFFFFF"
     android:layout_margin="10dp"
     android:elevation="20dp">
 
@@ -31,7 +31,7 @@
             android:maxLines="3"
             android:scrollHorizontally="true"
             android:text="Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title Title"
-            android:textColor="@color/titleColor" />
+            android:textColor="#000000" />
 
         <TextView
             android:id="@+id/cv_self_text"
@@ -47,7 +47,7 @@
             android:maxLines="3"
             android:scrollHorizontally="true"
             android:text="Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self TextSelf TextSelf TextSelf Text Self Text Self Text Self Text Self TextSelf Text Self Text Self Text Self Text Self Text Se "
-            android:textColor="@color/textColor" />
+            android:textColor="#515050" />
 
 
 
@@ -58,17 +58,17 @@
                 android:layout_marginEnd="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/cv_self_text"
-                app:strokeColor="@color/redditOrange"
+                app:strokeColor="#FF3F18"
                 app:icon="@drawable/reddit_icon3_resize"
                 app:strokeWidth="1dp"
                 app:cornerRadius="5dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:fontFamily="@font/titilliiumbold"
-                app:iconTint="@color/redditOrange"
+                app:iconTint="#FF3F18"
                 android:textSize="13sp"
                 app:iconPadding="8dp"
-                android:textColor="@color/redditOrange"
-                app:rippleColor="@color/redditOrange"
+                android:textColor="#FF3F18"
+                app:rippleColor="#FF3F18"
                 app:iconSize="20dp"
                 android:text="Open"
                 android:textAllCaps="false" />
@@ -83,7 +83,7 @@
                 android:layout_marginBottom="6dp"
                 android:fontFamily="@font/titilliumregular"
                 android:text="27-Apr-19 04:46 PM"
-                android:textColor="@color/textColor"/>
+                android:textColor="#515050"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

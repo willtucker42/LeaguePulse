@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:background="@color/background"
+    android:background="#FFFFFF"
     android:elevation="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +22,7 @@
             android:layout_marginTop="10dp"
             android:contentDescription="profile pic"
             android:src="@drawable/ic_person_black_24dp"
-            app:civ_border_color="@color/colorPrimary"
+            app:civ_border_color="#008577"
             app:civ_border_width="2dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
             android:fontFamily="@font/titilliiumbold"
             android:scrollHorizontally="true"
             android:text="Player Name"
-            android:textColor="@color/titleColor"
+            android:textColor="#000000"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@id/tcv_profile_pic"
             app:layout_constraintTop_toTopOf="parent"
@@ -57,7 +57,7 @@
             android:maxLines="1"
             android:scrollHorizontally="true"
             android:text="\@PlayerHandle"
-            android:textColor="@color/titleColor"
+            android:textColor="#000000"
             android:textSize="13sp"
             app:layout_constraintStart_toEndOf="@id/tcv_profile_pic"
             app:layout_constraintTop_toTopOf="parent"
@@ -73,7 +73,7 @@
             android:fontFamily="@font/titilliumregular"
             android:text="27-Apr-19 04:46 PM"
             android:textAlignment="textEnd"
-            android:textColor="@color/textColor"
+            android:textColor="#515050"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="HardcodedText" />
@@ -90,7 +90,7 @@
             android:maxLines="4"
             android:scrollHorizontally="true"
             android:text="Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self Text Self TextSelf TextSelf TextSelf Text Self Text Self Text Self Text Self TextSelf Text Self Text Self Text Self Text Self Text Se "
-            android:textColor="@color/textColor"
+            android:textColor="#515050"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tcv_profile_pic"
             tools:ignore="HardcodedText" />
@@ -136,16 +136,16 @@
             android:fontFamily="@font/titilliiumbold"
             android:text="@string/open"
             android:textAllCaps="false"
-            android:textColor="@color/twitterBlue"
+            android:textColor="#38A1F3"
             android:textSize="14sp"
             app:cornerRadius="5dp"
             app:icon="@drawable/twitter_icon_transparent"
             app:iconSize="20dp"
-            app:iconTint="@color/twitterBlue"
+            app:iconTint="#38A1F3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/media_constraint"
-            app:rippleColor="@color/twitterBlue"
-            app:strokeColor="@color/twitterBlue"
+            app:rippleColor="#38A1F3"
+            app:strokeColor="#38A1F3"
             app:strokeWidth="1.5dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

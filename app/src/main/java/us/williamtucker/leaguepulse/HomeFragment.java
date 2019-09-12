@@ -2,6 +2,7 @@ package us.williamtucker.leaguepulse;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -9,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SearchView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -61,24 +63,23 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private RecyclerViewAdapter adapter;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
-
     @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root_view = inflater.inflate(R.layout.fragment_home, container, false);
-        loadData();
+        SharedPreferences sharedPreferences = Objects.requireNonNull(this.getActivity()).getSharedPreferences("shared preferences", MODE_PRIVATE);
+        loadData(sharedPreferences);
         recyclerView = root_view.findViewById(R.id.home_recyclerview);
-        initializeVariables(root_view);
+        initializeVariables(root_view, sharedPreferences);
         BindRecyclerData bindRecyclerData = new BindRecyclerData();
         bindRecyclerData.execute(root_view);
-
         return root_view;
     }
 
-    private void loadData() {
+    private void loadData(SharedPreferences sharedPreferences) {
         System.out.println("Loading data...");
-        SharedPreferences sharedPreferences = Objects.requireNonNull(this.getActivity()).getSharedPreferences("shared preferences", MODE_PRIVATE);
+
         Gson gson = new Gson();
         String json = sharedPreferences.getString("list", null);
         Type type = new TypeToken<ArrayList<RecyclerItem>>() {}.getType();
@@ -111,7 +112,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void initializeVariables(final View root_view) {
+    private void initializeVariables(final View root_view, SharedPreferences sharedPreferences) {
+        CoordinatorLayout fragment_home_layout = root_view.findViewById(R.id.fragment_home_layout);
+
+        if (sharedPreferences.getBoolean("night_light_enabled", false)){
+            fragment_home_layout.setBackgroundColor(Color.parseColor("#000000"));
+        }else{
+            fragment_home_layout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
         String[] spinner_array = new String[]{"Reddit & Twitter", "Reddit Only", "Twitter Only"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
                 android.R.layout.simple_spinner_item, spinner_array);
@@ -136,9 +144,13 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         @Override
         protected RecyclerViewAdapter doInBackground(View... views) {
             try {
+
                 refreshLayout.setRefreshing(true);
                 System.out.println("here");
-                adapter = new RecyclerViewAdapter(recyclerItems, getActivity());
+                adapter = new RecyclerViewAdapter(recyclerItems, getActivity(),
+                        Objects.requireNonNull(getActivity()).
+                                getSharedPreferences("shared preferences", MODE_PRIVATE)
+                                .getBoolean("night_light_enabled", false));
                 System.out.println("here2");
             } catch (Exception e) {
                 Log.e(TAG, e.toString());
