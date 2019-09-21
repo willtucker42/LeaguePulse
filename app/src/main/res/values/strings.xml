@@ -43,5 +43,14 @@
     <string name="submit_a_suggestion">Submit a suggestion</string>
     <string name="feedback_or_suggestions_are_appreciated">Feedback or suggestions are appreciated!</string>
     <string name="enable_night_mode">Enable night mode</string>
+    <string name="filter">Filter</string>
+    <string name="search">Search...</string>
+    <string name="twitter">Twitter</string>
+    <string name="reddit">Reddit</string>
+    <string-array name="filter_spinner">
+        <item>All</item>
+        <item>Twitter</item>
+        <item>Reddit</item>
+    </string-array>
 
 </resources>

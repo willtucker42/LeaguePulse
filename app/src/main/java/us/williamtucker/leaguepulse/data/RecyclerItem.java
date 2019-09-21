@@ -18,6 +18,7 @@ public class RecyclerItem {
     private String mWeek_region;
     private int mTeam1_logo;
     private int mTeam2_logo;
+
     public RecyclerItem(String post_title, String self_text, String date, String trending_level,
                         String clickable_link, String permalink, String twitter_handle,
                         String twitter_name, String twitter_media_url, String media_type,
@@ -41,7 +42,6 @@ public class RecyclerItem {
         mTeam1_logo = team1_logo;
         mTeam2_logo = team2_logo;
     }
-
     public int getmTeam1_logo() {
         return mTeam1_logo;
     }

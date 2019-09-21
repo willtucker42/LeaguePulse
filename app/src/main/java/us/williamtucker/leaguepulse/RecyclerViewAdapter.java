@@ -288,6 +288,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     public void onClick(View view) {
                         viewHolder.show_winner.setVisibility(View.GONE);
                         viewHolder.winner_line_text.setVisibility(View.VISIBLE);
+                        if (dark_theme_enabled) {
+                            viewHolder.winner_line_text.setTextColor(Color.parseColor("#FFFFFF"));
+                        }else{
+                            viewHolder.winner_line_text.setTextColor(Color.parseColor("#000000"));
+                        }
                        /* ConstraintSet constraintSet = new ConstraintSet();
                         constraintSet.clone(viewHolder.constraintLayout);
                         constraintSet.connect(R.id.pgcv_match_details_button,ConstraintSet.BOTTOM,

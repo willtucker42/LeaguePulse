@@ -1,5 +1,6 @@
 package us.williamtucker.leaguepulse;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 //AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                @SuppressLint("InflateParams")
                 final View alertView = getLayoutInflater().inflate(R.layout.send_bug_report_laout,
                         null);
                 builder.setTitle("Report a bug");

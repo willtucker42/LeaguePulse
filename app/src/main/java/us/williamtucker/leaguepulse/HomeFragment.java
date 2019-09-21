@@ -1,6 +1,8 @@
 package us.williamtucker.leaguepulse;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -8,6 +10,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SearchView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -18,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,7 +32,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.leagepulse.leaguepulse.R;
 
 import retrofit2.Call;
@@ -49,6 +57,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -56,19 +65,27 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.os.Looper.prepare;
 
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "HomeFragment";
     private ArrayList<RecyclerItem> recyclerItems = new ArrayList<>();
+    private ArrayList<RecyclerItem> refreshList = new ArrayList<>();
+    private ArrayList<RecyclerItem> recyclerItems_copy = new ArrayList<>();
     private RecyclerViewAdapter adapter;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
+    private final int ALL_SPINNER = 0;
+    private final int TWITTER_SPINNER = 1;
+    private final int REDDIT_SPINNER = 2;
+    private SharedPreferences sharedPreferences;
     @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root_view = inflater.inflate(R.layout.fragment_home, container, false);
-        SharedPreferences sharedPreferences = Objects.requireNonNull(this.getActivity()).getSharedPreferences("shared preferences", MODE_PRIVATE);
+        sharedPreferences = Objects.requireNonNull(this.getActivity()).getSharedPreferences("shared preferences", MODE_PRIVATE);
+        System.out.println("Current thread: " + Thread.currentThread());
         loadData(sharedPreferences);
         recyclerView = root_view.findViewById(R.id.home_recyclerview);
         initializeVariables(root_view, sharedPreferences);
@@ -82,7 +99,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         Gson gson = new Gson();
         String json = sharedPreferences.getString("list", null);
-        Type type = new TypeToken<ArrayList<RecyclerItem>>() {}.getType();
+        Type type = new TypeToken<ArrayList<RecyclerItem>>() {
+        }.getType();
         recyclerItems = gson.fromJson(json, type);
         if (recyclerItems != null) {
             System.out.println("The list size is " + recyclerItems.size());
@@ -112,12 +130,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void initializeVariables(final View root_view, SharedPreferences sharedPreferences) {
+    private void initializeVariables(final View root_view, final SharedPreferences sharedPreferences) {
         CoordinatorLayout fragment_home_layout = root_view.findViewById(R.id.fragment_home_layout);
 
-        if (sharedPreferences.getBoolean("night_light_enabled", false)){
+        if (sharedPreferences.getBoolean("night_light_enabled", false)) {
             fragment_home_layout.setBackgroundColor(Color.parseColor("#000000"));
-        }else{
+        } else {
             fragment_home_layout.setBackgroundColor(Color.parseColor("#FFFFFF"));
         }
         String[] spinner_array = new String[]{"Reddit & Twitter", "Reddit Only", "Twitter Only"};
@@ -129,23 +147,125 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Trending");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         refreshLayout = root_view.findViewById(R.id.swipe_container);
         refreshLayout.setColorSchemeResources(R.color.colorPrimary,
                 android.R.color.holo_green_dark,
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark);
         refreshLayout.setOnRefreshListener(this);
+        Button filter_button = root_view.findViewById(R.id.filter_button);
+        filter_button.bringToFront();
+        filter_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e(TAG, "Button thread: " + Thread.currentThread());
+                //refresh();
+                recyclerItems.clear();
+                loadData(sharedPreferences);
+                openFilterDialogue();
+            }
+        });
         //initRecyclerLists(root_view);
     }
 
+    @SuppressLint("InflateParams")
+    private void openFilterDialogue() {
+        androidx.appcompat.app.AlertDialog.Builder builder =
+                new androidx.appcompat.app.AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        View alertView;
+        alertView = Objects.requireNonNull(getActivity()).getLayoutInflater()
+                .inflate(R.layout.filter_layout, null);
+        builder.setTitle("Filter");
+        final AppCompatEditText search_edit_text = alertView.findViewById(R.id.search_edit_text);
+        final AppCompatCheckBox twitter_check_box = alertView.findViewById(R.id.twitter_check_box);
+        final AppCompatCheckBox reddit_check_box = alertView.findViewById(R.id.reddit_check_box);
+        twitter_check_box.setChecked(true);
+        reddit_check_box.setChecked(true);
 
+        builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                boolean reddit_checked = reddit_check_box.isChecked();
+                boolean twitter_checked = twitter_check_box.isChecked();
+
+                if (!reddit_checked && !twitter_checked) {
+                    Toast.makeText(getActivity(), "Twitter and/or Reddit must be checked", Toast.LENGTH_LONG).show();
+                } else {
+                    createFilteredList(Objects.requireNonNull(search_edit_text.getText()).toString().toLowerCase()
+                            , twitter_checked, reddit_checked);
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setView(alertView);
+        androidx.appcompat.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void createFilteredList(String search_query, boolean twitter_checked
+            , boolean reddit_checked) {
+        //recyclerItems.clear();
+        ArrayList<RecyclerItem> first_list = new ArrayList<>();
+        ArrayList<RecyclerItem> final_list = new ArrayList<>();
+        System.out.println("Search query: " + search_query  + " Twitter boolean: " + twitter_checked + " reddit boolean " + reddit_checked);
+        for (RecyclerItem item : recyclerItems) {
+            if (reddit_checked && twitter_checked) {
+                first_list.add(item);
+                System.out.println("Reddit and Twitter item added");
+            } else if (twitter_checked && !item.getmTwitter_name().equals("")) {
+                first_list.add(item);
+                System.out.println("Twitter only item added");
+            } else if (reddit_checked && item.getmTwitter_name().equals("")) {
+                first_list.add(item);
+                System.out.println("Reddit only item added");
+            } else {
+                Log.e(TAG, "Unexpected value(s) for reddit_checked, twitter_checked");
+            }
+        }
+        if (first_list.size() > 0 && !search_query.trim().equals("")) {
+            System.out.println("We're in here");
+            for (RecyclerItem item : first_list) {
+                if (twitter_checked && (item.getmTwitter_handle().toLowerCase().contains(search_query)
+                        || item.getmTwitter_name().toLowerCase().contains(search_query)) || item.getmSelf_text().toLowerCase().contains(search_query)) {
+                    final_list.add(item);
+                    System.out.println(search_query + " FOUND in tweet");
+                    continue;
+                }else{
+                   // System.out.println(search_query + " not found in tweet");
+                }
+                if (reddit_checked && (item.getmPost_title().toLowerCase().contains(search_query) || item.getmSelf_text().toLowerCase().contains(search_query))) {
+                    final_list.add(item);
+                     System.out.println(search_query + " FOUND in REDDIT POST");
+                }else {
+                   // System.out.println(search_query + " not found in reddit post");
+                }
+
+            }
+            recyclerItems = final_list;
+        }else{
+            recyclerItems = first_list;
+            Log.e(TAG, "Either searchquery is empty or first list is empty");
+        }
+        System.out.println("final_list size: " + final_list.size());
+        BindRecyclerData bindRecyclerData = new BindRecyclerData();
+        bindRecyclerData.execute();
+    }
+
+    @SuppressLint("StaticFieldLeak")
     private class BindRecyclerData extends AsyncTask<View, Integer, RecyclerViewAdapter> {
 
         @Override
         protected RecyclerViewAdapter doInBackground(View... views) {
             try {
+                System.out.println("Bind recycler data doinbackground Current thread: " + Thread.currentThread());
 
-                refreshLayout.setRefreshing(true);
+                //refreshLayout.setRefreshing(true);
                 System.out.println("here");
                 adapter = new RecyclerViewAdapter(recyclerItems, getActivity(),
                         Objects.requireNonNull(getActivity()).
@@ -160,6 +280,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         @Override
         protected void onPostExecute(RecyclerViewAdapter adapter) {
+            System.out.println("Bind recycler on post execute Current thread: " + Thread.currentThread());
             System.out.println("Finished binding data");
             recyclerView.setAdapter(adapter);
             recyclerView.setVisibility(View.VISIBLE);
@@ -174,10 +295,19 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
+        System.out.println("Onrefresh thread: " + Thread.currentThread());
         GetRedditTwitterData getRedditTwitterData = new GetRedditTwitterData();
         getRedditTwitterData.execute();
     }
 
+    public void refresh() {
+        System.out.println("Refresh thread: " + Thread.currentThread());
+        GetRedditTwitterData getRedditTwitterData = new GetRedditTwitterData();
+        getRedditTwitterData.execute();
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
     private class GetTwitterData extends AsyncTask<String, Void, ArrayList<RecyclerItem>> {
         @Override
         protected void onPostExecute(ArrayList<RecyclerItem> recyclerItems1) {
@@ -203,7 +333,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 Log.e(TAG, "Catch: " + e.toString());
             }
             Calendar cal = Calendar.getInstance();
-            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm a");
+            @SuppressLint("SimpleDateFormat") final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm a");
             simpleDateFormat.setTimeZone(cal.getTimeZone());
             final DecimalFormat d_format = new DecimalFormat("#.#");
             final ArrayList<RecyclerItem> recyclerItemArrayList = new ArrayList<>();
@@ -255,7 +385,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             }
                             score = score.replaceAll("[()\\[\\]{}]", "");
                             //score_line = score;
-                            System.out.println(score.trim());
+                            //System.out.println(score.trim());
                             team2 = score.substring(score.indexOf("-") + 3).trim();
                             if (!team2.contains("G2") && score.contains("G2")) {
                                 team1 = "G2 Esports";
@@ -267,9 +397,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             if (winner_line_match.find()) {
                                 winner_line = "Winner: " + winner_line_match.group(1).replace("*", "") + " Minutes";
                             }
-                            System.out.println("Team1: " + team1);
+                            /*System.out.println("Team1: " + team1);
                             System.out.println("Team2: " + team2);
-                            System.out.println("Winner line: " + winner_line);
+                            System.out.println("Winner line: " + winner_line);*/
                         }
 
                         //System.out.println(self_text.substring(self_text.indexOf("---\n\n###")+1));
@@ -295,6 +425,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class GetRedditData extends AsyncTask<String, Void, ArrayList<RecyclerItem>> {
         @Override
         protected void onPostExecute(ArrayList<RecyclerItem> recyclerItems1) {
@@ -321,7 +452,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 Log.e(TAG, "Catch: " + e.toString());
             }
             Calendar cal = Calendar.getInstance();
-            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm a");
+            @SuppressLint("SimpleDateFormat") final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm a");
             simpleDateFormat.setTimeZone(cal.getTimeZone());
             final DecimalFormat d_format = new DecimalFormat("#.#");
             final ArrayList<RecyclerItem> recyclerItemArrayList = new ArrayList<>();
@@ -373,7 +504,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             }
                             score = score.replaceAll("[()\\[\\]{}]", "");
                             //score_line = score;
-                            System.out.println(score.trim());
+                            //System.out.println(score.trim());
                             team2 = score.substring(score.indexOf("-") + 3).trim();
                             if (!team2.contains("G2") && score.contains("G2")) {
                                 team1 = "G2 Esports";
@@ -385,9 +516,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             if (winner_line_match.find()) {
                                 winner_line = "Winner: " + winner_line_match.group(1).replace("*", "") + " Minutes";
                             }
-                            System.out.println("Team1: " + team1);
+                            /*System.out.println("Team1: " + team1);
                             System.out.println("Team2: " + team2);
-                            System.out.println("Winner line: " + winner_line);
+                            System.out.println("Winner line: " + winner_line);*/
                         }
 
                         //System.out.println(self_text.substring(self_text.indexOf("---\n\n###")+1));
@@ -413,12 +544,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class GetRedditTwitterData extends AsyncTask<String, Void, ArrayList<RecyclerItem>> {
 
         private static final String TAG = "GetRedditDataAsyncTask";
 
         @Override
         protected void onPostExecute(ArrayList<RecyclerItem> recyclerItems1) {
+            System.out.println("Refresh async on post execute: " + Thread.currentThread());
             recyclerItems = recyclerItems1;
             BindRecyclerData bindRecyclerData = new BindRecyclerData();
             bindRecyclerData.execute();
@@ -426,7 +559,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         @Override
         protected ArrayList<RecyclerItem> doInBackground(String... strings) {
+            System.out.println("Refresh async: " + Thread.currentThread());
             recyclerItems.clear();
+            Log.i("Recycler item size", String.valueOf(recyclerItems.size()));
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://gettrendingreddittwitter.us-west-1.elasticbeanstalk.com/")
                     .addConverterFactory(GsonConverterFactory.create())
@@ -441,7 +576,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 Log.e(TAG, "Catch: " + e.toString());
             }
             Calendar cal = Calendar.getInstance();
-            final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm a");
+            @SuppressLint("SimpleDateFormat") final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yy hh:mm a");
             simpleDateFormat.setTimeZone(cal.getTimeZone());
             final DecimalFormat d_format = new DecimalFormat("#.#");
             final ArrayList<RecyclerItem> recyclerItemArrayList = new ArrayList<>();
@@ -493,7 +628,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             }
                             score = score.replaceAll("[()\\[\\]{}]", "");
                             //score_line = score;
-                            System.out.println(score.trim());
+                            //System.out.println(score.trim());
                             team2 = score.substring(score.indexOf("-") + 3).trim();
                             if (!team2.contains("G2") && score.contains("G2")) {
                                 team1 = "G2 Esports";
@@ -505,14 +640,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             if (winner_line_match.find()) {
                                 winner_line = "Winner: " + winner_line_match.group(1).replace("*", "") + " Minutes";
                             }
-                            System.out.println("Team1: " + team1);
+                            /*System.out.println("Team1: " + team1);
                             System.out.println("Team2: " + team2);
-                            System.out.println("Winner line: " + winner_line);
+                            System.out.println("Winner line: " + winner_line);*/
                         }
 
                         //System.out.println(self_text.substring(self_text.indexOf("---\n\n###")+1));
                     } else {
-                        System.out.println("Doesn't");
+                        //System.out.println("Doesn't");
                     }
 
                     recyclerItemArrayList.add(new RecyclerItem(post.getTitle(), self_text,

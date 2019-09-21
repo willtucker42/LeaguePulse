@@ -220,18 +220,18 @@ public class SplashActivity extends AppCompatActivity {
                             }
                             winner_line = Objects.requireNonNull(winner_line).replace("  ", "");*/
                             winner_line = "Winner: " + getWinner(score.trim());
-                            System.out.println("Team1: " + team1);
+                              /*System.out.println("Team1: " + team1);
                             System.out.println("Team2: " + team2);
-                            System.out.println("Winner line: " + winner_line);
+                            System.out.println("Winner line: " + winner_line);*/
                         }else{
-                            System.out.println("\n\n!!! Score matcher did not find anything\n\n");
+                            //System.out.println("\n\n!!! Score matcher did not find anything\n\n");
                         }
 
                         //System.out.println(self_text.substring(self_text.indexOf("---\n\n###")+1));
                     } else {
                         self_text = self_text.replace("&amp;", "&");
                         title = title.replace("&amp;", "&");
-                        System.out.println(title + " Doesn't");
+                        //System.out.println(title + " Doesn't");
                     }
 
                     recyclerItemArrayList.add(new RecyclerItem(post.getTitle(), self_text,
