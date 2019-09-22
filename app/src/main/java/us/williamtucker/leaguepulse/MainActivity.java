@@ -107,15 +107,19 @@ public class MainActivity extends AppCompatActivity {
                         ParseObject bug = new ParseObject("LeaguePulseReports");
                         EditText bugText = alertView.findViewById(R.id.editText);
                         final String bugDesc = bugText.getText().toString();
-                        bug.put("bug_reports", bugDesc);
-                        try {
-                            bug.save();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                        if (!bugDesc.equals("")) {
+                            bug.put("bug_reports", bugDesc);
+                            try {
+                                bug.save();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            dialog.dismiss();
+                            Toast.makeText(MainActivity.this, "Bug report sent.",
+                                    Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(MainActivity.this, "Text is empty", Toast.LENGTH_LONG).show();
                         }
-                        dialog.dismiss();
-                        Toast.makeText(MainActivity.this, "Bug report sent.",
-                                Toast.LENGTH_LONG).show();
                     }
 
                 });
@@ -146,15 +150,19 @@ public class MainActivity extends AppCompatActivity {
                         ParseObject suggestion = new ParseObject("LeaguePulseReports");
                         EditText suggestion_text = suggestion_alertView.findViewById(R.id.editText);
                         final String suggestion_desc = suggestion_text.getText().toString();
-                        suggestion.put("suggestions", suggestion_desc);
-                        try {
-                            suggestion.save();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                        if (!suggestion_desc.equals("")) {
+                            suggestion.put("suggestions", suggestion_desc);
+                            try {
+                                suggestion.save();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            dialog.dismiss();
+                            Toast.makeText(MainActivity.this, "Suggestion sent!",
+                                    Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(MainActivity.this, "Text is empty", Toast.LENGTH_LONG).show();
                         }
-                        dialog.dismiss();
-                        Toast.makeText(MainActivity.this, "Suggestion sent!",
-                                Toast.LENGTH_LONG).show();
                     }
 
                 });

@@ -48,6 +48,10 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.leagepulse.leaguepulse.R;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -62,6 +66,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final int VIEW_TYPE_REDDIT = 0;
     private final int VIEW_TYPE_TWITTER = 1;
     private final int VIEW_TYPE_PROGAME = 2;
+
+    private final int DIRECT_LINK_TAP = 0;
+    private final int REDDIT_BUTTON_TAP = 1;
+    private final int TWITTER_BUTTON_TAP = 2;
+    private final int OPEN_PHOTO_TAP = 3;
     /*private ArrayList<String> post_titles;
     private ArrayList<String> self_texts;
     private ArrayList<String> authors;
@@ -102,7 +111,37 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return VIEW_TYPE_TWITTER;
         }*/
     }
+    private void sendEngagementData(final int type) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("LeaguePulseEngagement");
 
+        // Retrieve the object by id
+        query.getInBackground("3jLHQQIAh1", new GetCallback<ParseObject>() {
+            public void done(ParseObject engagement, ParseException e) {
+                if (e == null) {
+                    // Now let's update it with some new data. In this case, only cheatMode and score
+                    switch (type) {
+                        case DIRECT_LINK_TAP:
+                            engagement.increment("direct_link_taps");
+                            break;
+                        case REDDIT_BUTTON_TAP:
+                            engagement.increment("reddit_button_taps");
+                            break;
+                        case TWITTER_BUTTON_TAP:
+                            engagement.increment("twitter_button_taps");
+                            break;
+                        case OPEN_PHOTO_TAP:
+                            engagement.increment("open_photo_taps");
+                        default:
+                            Log.e(TAG, "sendEngagementData Error. int type: " + type);
+                    }
+                    engagement.saveInBackground();
+                    Log.i(TAG, "Sent");
+                } else {
+                    Log.e(TAG, e.toString());
+                }
+            }
+        });
+    }
     RecyclerViewAdapter(ArrayList<RecyclerItem> recyclerItems, Context context, Boolean dark_theme) {
         bitmapOptions.inJustDecodeBounds = true;
         mRecycleritems = recyclerItems;
@@ -186,6 +225,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         System.out.println("Reddit link is a youtube link");
                     }
                     viewHolder.self_text.setClickable(true);
+                    viewHolder.self_text.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            sendEngagementData(DIRECT_LINK_TAP);
+                        }
+                    });
                     viewHolder.self_text.setMovementMethod(LinkMovementMethod.getInstance());
                     String link = "<a href='" + self_text + "'>" + self_text + " </a>";
                     viewHolder.self_text.setText((Html.fromHtml(link)));
@@ -198,6 +243,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 viewHolder.goto_reddit_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        sendEngagementData(REDDIT_BUTTON_TAP);
                         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(context);
                         Bundle params = new Bundle();
                         String link = "https://www.reddit.com" + currentItem.getmPermalink();
@@ -244,6 +290,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 viewHolder.goto_twitter_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        sendEngagementData(TWITTER_BUTTON_TAP);
                         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(context);
                         Bundle params = new Bundle();
                         String link = currentItem.getmPermalink();
@@ -277,6 +324,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 viewHolder.match_details.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        sendEngagementData(REDDIT_BUTTON_TAP);
                         String link = "https://www.reddit.com" + currentItem.getmPermalink();
                         Uri uri = Uri.parse(link); // missing 'http://' will cause crashed
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -328,6 +376,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     @Override
                     public void onClick(View view) {
                         AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                        sendEngagementData(OPEN_PHOTO_TAP);
                         Bundle bundle = new Bundle();
                         bundle.putString("image_url", media_url);
                         bundle.putString("twitter_name", twitter_name);

@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">League Pulse</string>
     <string name="home">Home</string>
-    <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="get_trending_reddit_php_url" translatable="false">http://leaguepulsereddit-env.pggnwbfn7t.us-west-1.elasticbeanstalk.com/get-trendingredditdata-json1.php</string>
@@ -47,6 +46,7 @@
     <string name="search">Search...</string>
     <string name="twitter">Twitter</string>
     <string name="reddit">Reddit</string>
+    <string name="settings">Settings</string>
     <string-array name="filter_spinner">
         <item>All</item>
         <item>Twitter</item>

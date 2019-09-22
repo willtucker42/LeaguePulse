@@ -1,28 +1,11 @@
 package us.williamtucker.leaguepulse;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatCheckBox;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.appcompat.widget.SearchView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,13 +13,42 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.material.button.MaterialButton;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.leagepulse.leaguepulse.R;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -48,24 +60,7 @@ import us.williamtucker.leaguepulse.data.RedditTwitterPHP;
 import us.williamtucker.leaguepulse.data.TwitterPHP;
 import us.williamtucker.leaguepulse.data.redditdata.datamodel.Post;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static android.content.Context.MODE_PRIVATE;
-import static android.os.Looper.prepare;
 
 public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "HomeFragment";
@@ -75,16 +70,16 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private RecyclerViewAdapter adapter;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
-    private final int ALL_SPINNER = 0;
-    private final int TWITTER_SPINNER = 1;
-    private final int REDDIT_SPINNER = 2;
-    private SharedPreferences sharedPreferences;
+    private final int FILTER_BUTTON_TAP = 0;
+    private final int REDDIT_BUTTON_TAP = 1;
+    private final int TWITTER_BUTTON_TAP = 2;
+
     @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root_view = inflater.inflate(R.layout.fragment_home, container, false);
-        sharedPreferences = Objects.requireNonNull(this.getActivity()).getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = Objects.requireNonNull(this.getActivity()).getSharedPreferences("shared preferences", MODE_PRIVATE);
         System.out.println("Current thread: " + Thread.currentThread());
         loadData(sharedPreferences);
         recyclerView = root_view.findViewById(R.id.home_recyclerview);
@@ -92,6 +87,35 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         BindRecyclerData bindRecyclerData = new BindRecyclerData();
         bindRecyclerData.execute(root_view);
         return root_view;
+    }
+
+    private void sendEngagementData(final int type) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("LeaguePulseEngagement");
+
+        // Retrieve the object by id
+        query.getInBackground("3jLHQQIAh1", new GetCallback<ParseObject>() {
+            public void done(ParseObject engagement, ParseException e) {
+                if (e == null) {
+                    // Now let's update it with some new data. In this case, only cheatMode and score
+                    switch (type) {
+                        case FILTER_BUTTON_TAP:
+                            engagement.increment("filter_button_taps");
+                            break;
+                        case REDDIT_BUTTON_TAP:
+                            engagement.increment("reddit_button_taps");
+                            break;
+                        case TWITTER_BUTTON_TAP:
+                            engagement.increment("twitter_button_taps");
+                            break;
+                        default:
+                            Log.e(TAG, "sendEngagementData Error. int type: " + type);
+                    }
+                    engagement.saveInBackground();
+                } else {
+                    Log.e(TAG, e.toString());
+                }
+            }
+        });
     }
 
     private void loadData(SharedPreferences sharedPreferences) {
@@ -160,6 +184,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             @Override
             public void onClick(View view) {
                 Log.e(TAG, "Button thread: " + Thread.currentThread());
+                sendEngagementData(FILTER_BUTTON_TAP);
                 //refresh();
                 recyclerItems.clear();
                 loadData(sharedPreferences);
@@ -213,7 +238,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         //recyclerItems.clear();
         ArrayList<RecyclerItem> first_list = new ArrayList<>();
         ArrayList<RecyclerItem> final_list = new ArrayList<>();
-        System.out.println("Search query: " + search_query  + " Twitter boolean: " + twitter_checked + " reddit boolean " + reddit_checked);
+        System.out.println("Search query: " + search_query + " Twitter boolean: " + twitter_checked + " reddit boolean " + reddit_checked);
         for (RecyclerItem item : recyclerItems) {
             if (reddit_checked && twitter_checked) {
                 first_list.add(item);
@@ -236,19 +261,19 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     final_list.add(item);
                     System.out.println(search_query + " FOUND in tweet");
                     continue;
-                }else{
-                   // System.out.println(search_query + " not found in tweet");
+                } else {
+                    // System.out.println(search_query + " not found in tweet");
                 }
                 if (reddit_checked && (item.getmPost_title().toLowerCase().contains(search_query) || item.getmSelf_text().toLowerCase().contains(search_query))) {
                     final_list.add(item);
-                     System.out.println(search_query + " FOUND in REDDIT POST");
-                }else {
-                   // System.out.println(search_query + " not found in reddit post");
+                    System.out.println(search_query + " FOUND in REDDIT POST");
+                } else {
+                    // System.out.println(search_query + " not found in reddit post");
                 }
 
             }
             recyclerItems = final_list;
-        }else{
+        } else {
             recyclerItems = first_list;
             Log.e(TAG, "Either searchquery is empty or first list is empty");
         }

@@ -4,8 +4,8 @@
     android:icon="@drawable/icons8fire52"
     android:title="@string/trending"/>
     <item android:id="@+id/nav_settings"
-        android:icon="@drawable/icons8bell50"
-        android:title="@string/alerts"/>
+        android:icon="@drawable/gear_icon"
+        android:title="@string/settings"/>
     <item android:id="@+id/nav_about"
         android:icon="@drawable/icons8info64"
         android:title="@string/about"/>
