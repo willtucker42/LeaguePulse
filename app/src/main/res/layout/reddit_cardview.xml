@@ -70,19 +70,28 @@
                 android:textColor="#FF3F18"
                 app:rippleColor="#FF3F18"
                 app:iconSize="20dp"
-                android:text="Open"
+                android:text="@string/open"
                 android:textAllCaps="false" />
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/reddit_share_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/ic_share_black_24dp"/>
 
             <TextView
                 android:id="@+id/cv_time_posted_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/reddit_share_button"
+                app:layout_constraintStart_toStartOf="@id/cv_gotoreddit_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="6dp"
                 android:fontFamily="@font/titilliumregular"
-                android:text="27-Apr-19 04:46 PM"
+                android:text="@string/Sample_date"
                 android:textColor="#515050"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

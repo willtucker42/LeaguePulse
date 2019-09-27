@@ -73,6 +73,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private final int FILTER_BUTTON_TAP = 0;
     private final int REDDIT_BUTTON_TAP = 1;
     private final int TWITTER_BUTTON_TAP = 2;
+    private final int SHARE_BUTTON_TAP = 3;
 
     @SuppressLint("SetTextI18n")
     @Nullable
@@ -106,6 +107,9 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             break;
                         case TWITTER_BUTTON_TAP:
                             engagement.increment("twitter_button_taps");
+                            break;
+                        case SHARE_BUTTON_TAP:
+                            engagement.increment("share_button_taps");
                             break;
                         default:
                             Log.e(TAG, "sendEngagementData Error. int type: " + type);

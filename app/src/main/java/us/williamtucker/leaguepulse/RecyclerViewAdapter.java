@@ -12,6 +12,7 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -71,6 +72,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final int REDDIT_BUTTON_TAP = 1;
     private final int TWITTER_BUTTON_TAP = 2;
     private final int OPEN_PHOTO_TAP = 3;
+    private final int SHARE_BUTTON_TAP = 4;
     /*private ArrayList<String> post_titles;
     private ArrayList<String> self_texts;
     private ArrayList<String> authors;
@@ -87,6 +89,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
     private boolean dark_theme_enabled;
     SharedPreferences mSharedPreferences;
+
     @Override
     public int getItemViewType(int position) {
 
@@ -111,6 +114,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return VIEW_TYPE_TWITTER;
         }*/
     }
+
     private void sendEngagementData(final int type) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("LeaguePulseEngagement");
 
@@ -131,6 +135,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             break;
                         case OPEN_PHOTO_TAP:
                             engagement.increment("open_photo_taps");
+                            break;
+                        case SHARE_BUTTON_TAP:
+                            engagement.increment("share_button_taps");
+                            break;
                         default:
                             Log.e(TAG, "sendEngagementData Error. int type: " + type);
                     }
@@ -142,6 +150,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         });
     }
+
     RecyclerViewAdapter(ArrayList<RecyclerItem> recyclerItems, Context context, Boolean dark_theme) {
         bitmapOptions.inJustDecodeBounds = true;
         mRecycleritems = recyclerItems;
@@ -204,17 +213,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         try {
             if (viewHolder1.getItemViewType() == VIEW_TYPE_REDDIT) {
                 RedditViewHolder viewHolder = (RedditViewHolder) viewHolder1;
-                if (dark_theme_enabled){
+                if (dark_theme_enabled) {
                     viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#252525"));
                     viewHolder.post_title.setTextColor(Color.parseColor("#FFFFFF"));
                     viewHolder.self_text.setTextColor(Color.parseColor("#ACACAC"));
                     viewHolder.date_text.setTextColor(Color.parseColor("#ACACAC"));
                     System.out.println("Dark theme enabled for RedditCardView");
-                }else{
-                        viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                        viewHolder.post_title.setTextColor(Color.parseColor("#000000"));
-                        viewHolder.self_text.setTextColor(Color.parseColor("#515050"));
-                        viewHolder.date_text.setTextColor(Color.parseColor("#515050"));
+                } else {
+                    viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    viewHolder.post_title.setTextColor(Color.parseColor("#000000"));
+                    viewHolder.self_text.setTextColor(Color.parseColor("#515050"));
+                    viewHolder.date_text.setTextColor(Color.parseColor("#515050"));
                 }
                 String self_text = currentItem.getmSelf_text();
                 //viewHolder.author.setText(authors.get(position));
@@ -225,28 +234,37 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         System.out.println("Reddit link is a youtube link");
                     }
                     viewHolder.self_text.setClickable(true);
+                    String link = "<a href='" + self_text + "'>" + self_text + " </a>";
+                    viewHolder.self_text.setText((Html.fromHtml(link)));
+                    viewHolder.self_text.setMovementMethod(LinkMovementMethod.getInstance());
                     viewHolder.self_text.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            Log.e(TAG, "Self text clicked");
                             sendEngagementData(DIRECT_LINK_TAP);
                         }
                     });
-                    viewHolder.self_text.setMovementMethod(LinkMovementMethod.getInstance());
-                    String link = "<a href='" + self_text + "'>" + self_text + " </a>";
-                    viewHolder.self_text.setText((Html.fromHtml(link)));
                 } else {
                     viewHolder.self_text.setText(self_text);
+                    viewHolder.self_text.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.e(TAG, "Self text clicked");
+                            sendEngagementData(DIRECT_LINK_TAP);
+                        }
+                    });
                 }
+
                 viewHolder.date_text.setText(currentItem.getmDate());
                 //viewHolder.trending_level.setText(currentItem.getmTrending_level());
                 viewHolder.post_title.setText(currentItem.getmPost_title());
+                final String link = "https://www.reddit.com" + currentItem.getmPermalink();
                 viewHolder.goto_reddit_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         sendEngagementData(REDDIT_BUTTON_TAP);
                         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(context);
                         Bundle params = new Bundle();
-                        String link = "https://www.reddit.com" + currentItem.getmPermalink();
                         params.putString("GoToRedditButton", link);
                         firebaseAnalytics.logEvent("linkTapped", params);
 
@@ -255,16 +273,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         context.startActivity(intent);
                     }
                 });
+                viewHolder.reddit_share_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sendEngagementData(SHARE_BUTTON_TAP);
+                        initShareButton(link + " via LeaugePulse", "LeaguePulse");
+                    }
+                });
             } else if (viewHolder1.getItemViewType() == VIEW_TYPE_TWITTER) {
                 TwitterViewHolder viewHolder = (TwitterViewHolder) viewHolder1;
-                if (dark_theme_enabled){
+                if (dark_theme_enabled) {
                     System.out.println("Dark theme enabled for TwitterCardView");
                     viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#252525"));
                     viewHolder.twitter_name.setTextColor(Color.parseColor("#FFFFFF"));
                     viewHolder.twitter_handle.setTextColor(Color.parseColor("#FFFFFF"));
                     viewHolder.self_text.setTextColor(Color.parseColor("#ACACAC"));
                     viewHolder.date_text.setTextColor(Color.parseColor("#ACACAC"));
-                }else{
+                } else {
                     viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#FFFFFF"));
                     viewHolder.twitter_name.setTextColor(Color.parseColor("#000000"));
                     viewHolder.twitter_handle.setTextColor(Color.parseColor("#000000"));
@@ -287,13 +312,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 viewHolder.twitter_handle.setText(currentItem.getmTwitter_handle());
                 viewHolder.twitter_name.setText(currentItem.getmTwitter_name());
                 viewHolder.date_text.setText(currentItem.getmDate());
+                final String link = currentItem.getmPermalink();
                 viewHolder.goto_twitter_button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         sendEngagementData(TWITTER_BUTTON_TAP);
                         FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(context);
                         Bundle params = new Bundle();
-                        String link = currentItem.getmPermalink();
                         params.putString("GoToTwitterButton", link);
                         firebaseAnalytics.logEvent("linkTapped", params);
                         Uri uri = Uri.parse(link);
@@ -301,15 +326,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         context.startActivity(intent);
                     }
                 });
+                viewHolder.twitter_share_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sendEngagementData(SHARE_BUTTON_TAP);
+                        initShareButton(link + " via LeaugePulse", "LeaguePulse");
+                    }
+                });
             } else {
                 final ProGameViewHolder viewHolder = (ProGameViewHolder) viewHolder1;
-                if (dark_theme_enabled){
+                if (dark_theme_enabled) {
                     System.out.println("Dark theme enabled for ProGameCardView");
                     viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#252525"));
                     viewHolder.title_text.setTextColor(Color.parseColor("#FFFFFF"));
                     viewHolder.week_region_text.setTextColor(Color.parseColor("#ACACAC"));
                     viewHolder.winner_line_text.setTextColor(Color.parseColor("#FFFFFF"));
-                }else{
+                } else {
 
                     viewHolder.parent_layout.setBackgroundColor(Color.parseColor("#FFFFFF"));
                     viewHolder.title_text.setTextColor(Color.parseColor("#000000"));
@@ -321,14 +353,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 viewHolder.show_winner.setVisibility(View.VISIBLE);
                 viewHolder.winner_line_text.setVisibility(View.GONE);
                 viewHolder.title_text.setText(currentItem.getmTeam1() + " vs. " + currentItem.getmTeam2());
+                final String link = "https://www.reddit.com" + currentItem.getmPermalink();
                 viewHolder.match_details.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         sendEngagementData(REDDIT_BUTTON_TAP);
-                        String link = "https://www.reddit.com" + currentItem.getmPermalink();
                         Uri uri = Uri.parse(link); // missing 'http://' will cause crashed
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         context.startActivity(intent);
+                    }
+                });
+                viewHolder.progame_share_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sendEngagementData(SHARE_BUTTON_TAP);
+                        initShareButton(link + " via LeaugePulse", "LeaguePulse");
                     }
                 });
                 viewHolder.show_winner.setOnClickListener(new View.OnClickListener() {
@@ -338,7 +377,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         viewHolder.winner_line_text.setVisibility(View.VISIBLE);
                         if (dark_theme_enabled) {
                             viewHolder.winner_line_text.setTextColor(Color.parseColor("#FFFFFF"));
-                        }else{
+                        } else {
                             viewHolder.winner_line_text.setTextColor(Color.parseColor("#000000"));
                         }
                        /* ConstraintSet constraintSet = new ConstraintSet();
@@ -386,7 +425,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                 .replace(R.id.main_frame_layout, fragment, "IMAGE_FRAGMENT")
                                 .commit();*/
                         activity.getSupportFragmentManager().beginTransaction()
-                                .add(R.id.main_frame_layout,fragment,"IMAGE_FRAGMENT").commit();
+                                .add(R.id.main_frame_layout, fragment, "IMAGE_FRAGMENT").commit();
 
                     }
                 });
@@ -443,6 +482,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
+    private void initShareButton(String share_body, String share_subject) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, share_subject);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, share_body);
+        context.startActivity(Intent.createChooser(shareIntent, "Share"));
+    }
+
     @Override
     public int getItemCount() {
         return mRecycleritems.size();
@@ -454,13 +501,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView post_title;
         TextView self_text;
         TextView date_text;
-       // TextView trending_level;
+        // TextView trending_level;
         Button goto_reddit_button;
         CardView parent_layout;
+        AppCompatImageButton reddit_share_button;
 
         RedditViewHolder(@NonNull View itemView) {
             super(itemView);
             //trending_level = itemView.findViewById(R.id.cv_trending_level);
+            reddit_share_button = itemView.findViewById(R.id.reddit_share_button);
             date_text = itemView.findViewById(R.id.cv_time_posted_text);
             self_text = itemView.findViewById(R.id.cv_self_text);
             post_title = itemView.findViewById(R.id.cv_post_title);
@@ -481,9 +530,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         PlayerView video_view;
         Button goto_twitter_button;
         CardView parent_layout;
+        AppCompatImageButton twitter_share_button;
 
         TwitterViewHolder(@NonNull View itemView) {
             super(itemView);
+            twitter_share_button = itemView.findViewById(R.id.twitter_share_button);
             date_text = itemView.findViewById(R.id.tcv_date_time);
             self_text = itemView.findViewById(R.id.tcv_self_text);
             profile_pic = itemView.findViewById(R.id.tcv_profile_pic);
@@ -506,9 +557,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView winner_line_text;
         ConstraintLayout constraintLayout;
         CardView parent_layout;
+        AppCompatImageButton progame_share_button;
 
         ProGameViewHolder(@NonNull View itemView) {
             super(itemView);
+            progame_share_button = itemView.findViewById(R.id.progame_share_button);
             constraintLayout = itemView.findViewById(R.id.pgcv_main_constraint_layout);
             match_details = itemView.findViewById(R.id.pgcv_match_details_button);
             show_winner = itemView.findViewById(R.id.show_winner_button);

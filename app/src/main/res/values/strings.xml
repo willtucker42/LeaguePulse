@@ -10,7 +10,6 @@
     <string name="open_on_reddit">Open on Reddit</string>
     <string name="open_on_twitter">Open on Twitter</string>
     <string name="logo_for_the_pro_region">Logo for the pro region</string>
-    <string name="open">Open</string>
     <string name="vs">vs</string>
     <string name="reddit_alerts">Reddit Alerts</string>
     <string name="all_trending_posts">All Trending posts</string>
@@ -47,6 +46,9 @@
     <string name="twitter">Twitter</string>
     <string name="reddit">Reddit</string>
     <string name="settings">Settings</string>
+    <string name="share_button">Share Button</string>
+    <string name="Sample_date">27-Apr-19 04:46 PM</string>
+    <string name="open">Open</string>
     <string-array name="filter_spinner">
         <item>All</item>
         <item>Twitter</item>
