@@ -74,8 +74,10 @@
                 android:textAllCaps="false" />
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/reddit_share_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="5dp"
+                android:background="@null"
                 android:layout_marginStart="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

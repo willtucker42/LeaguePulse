@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.leagepulse.leaguepulse.R;
@@ -36,6 +37,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SplashActivity extends AppCompatActivity {
     ArrayList<RecyclerItem> recyclerItemArrayList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,6 +148,7 @@ public class SplashActivity extends AppCompatActivity {
             if (!response.isSuccessful()) {
                 //not successful
                 Log.e(TAG, String.valueOf(response.code()));
+                Toast.makeText(SplashActivity.this, "An error occured. Please try again later", Toast.LENGTH_LONG).show();
                 return null;
             }
             List<Post> posts = response.body();
@@ -175,9 +178,9 @@ public class SplashActivity extends AppCompatActivity {
                             media_type, profile_pic_url, "", "", "",
                             "", 0, 0));
                 } else {
-                    if ((self_text.contains("---\n\n###MATCH") || self_text.contains("---\n\n### MATCH"))
+                    if ((self_text.contains("---\n\n###MATCH 1:") || self_text.contains("---\n\n###MATCH") || self_text.contains("---\n\n### MATCH"))
                             && self_text.contains("postmatch.team")
-                            && (title.contains("LEC") || title.contains("LCS"))) {
+                            && (title.contains("LEC") || title.contains("LCS") || title.contains("World"))) {
                         Matcher matcher = Pattern.compile("---\n\n###(.*?)\n").matcher(self_text);
                         Matcher winner_line_match = Pattern.compile("Winner:(.*?)m]").matcher(self_text);
                         Matcher matcher2 = Pattern.compile("/ (.*?) /").matcher(title);
@@ -223,7 +226,7 @@ public class SplashActivity extends AppCompatActivity {
                               /*System.out.println("Team1: " + team1);
                             System.out.println("Team2: " + team2);
                             System.out.println("Winner line: " + winner_line);*/
-                        }else{
+                        } else {
                             //System.out.println("\n\n!!! Score matcher did not find anything\n\n");
                         }
 
@@ -261,9 +264,9 @@ public class SplashActivity extends AppCompatActivity {
             winning_team = score_line.substring(0, score_line.indexOf("1"));
         } else if (score_line.contains("0-1")) {
             winning_team = score_line.substring(score_line.lastIndexOf("1") + 1);
-        } else if (score_line.contains("3-2") || score_line.contains("3-1") || score_line.contains("3-0")){
+        } else if (score_line.contains("3-2") || score_line.contains("3-1") || score_line.contains("3-0")) {
             winning_team = score_line.substring(0, score_line.indexOf("3"));
-        }else if(score_line.contains("2-3") || score_line.contains("1-3") || score_line.contains("0-3")) {
+        } else if (score_line.contains("2-3") || score_line.contains("1-3") || score_line.contains("0-3")) {
             winning_team = score_line.substring(score_line.lastIndexOf("3") + 1);
         }
         return winning_team;
@@ -318,8 +321,59 @@ public class SplashActivity extends AppCompatActivity {
             } else {
                 return 0;
             }
+        } else if (week_region != null && week_region.contains("World")) {
+            if (team1.contains("Cloud")) {
+                return R.drawable.c9_logo2_resize;
+            } else if (team1.contains("Telecom")) {
+                return R.drawable.skt_logo_2;
+            } else if (team1.contains("Liquid")) {
+                return R.drawable.tl_logo_2;
+            } else if (team1.contains("G2")) {
+                return R.drawable.g2_logo_resize;
+            } else if (team1.contains("Fnatic")) {
+                return R.drawable.fnatic_logo;
+            } else if (team1.contains("Splyce")) {
+                return R.drawable.splyce_logo_resize;
+            } else if (team1.contains("Griffin")) {
+                return R.drawable.griffin_logo_2;
+            } else if (team1.contains("DAMWON")) {
+                return R.drawable.damwon_logo;
+            } else if (team1.contains("J Team")) {
+                return R.drawable.jteam_logo;
+            } else if (team1.contains("ahq")) {
+                return R.drawable.ahq_logo2;
+            } else if (team1.contains("Hong Kong")) {
+                return R.drawable.hka_logo2;
+            } else if (team1.contains("FunPlus")) {
+                return R.drawable.fpx_logo2;
+            } else if (team1.contains("Royal")) {
+                return R.drawable.rng_logo;
+            } else if (team1.contains("Invictus")) {
+                return R.drawable.ig_logo2;
+            } else if (team1.contains("Gigabyte")) {
+                return R.drawable.gam_logo2;
+            } else if (team1.contains("Lowkey")) {
+                return R.drawable.lowkey_logo;
+            } else if (team1.contains("Flamengo")) {
+                return R.drawable.flamengo_logo;
+            } else if (team1.contains("Unicorn")) {
+                return R.drawable.uol_logo2;
+            } else if (team1.contains("DetonatioN")) {
+                return R.drawable.dfm_logo2;
+            } else if (team1.contains("Isurus")) {
+                return R.drawable.isurus_logo2;
+            } else if (team1.contains("MAMMOTH")) {
+                return R.drawable.mammoth_logo2;
+            } else if (team1.contains("MEGA")) {
+                return R.drawable.mega_logo2;
+            } else if (team1.contains("Royal Youth")) {
+                return R.drawable.royal_youth_logo2;
+            } else if (team1.contains("Clutch")) {
+                return R.drawable.cg_logo_resize;
+            }
         } else {
             return 0;
         }
+        return 0;
     }
 }

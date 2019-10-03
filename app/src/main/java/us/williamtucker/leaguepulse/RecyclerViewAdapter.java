@@ -234,13 +234,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         System.out.println("Reddit link is a youtube link");
                     }
                     viewHolder.self_text.setClickable(true);
-                    String link = "<a href='" + self_text + "'>" + self_text + " </a>";
+                    final String link = "<a href='" + self_text + "'>" + self_text + " </a>";
                     viewHolder.self_text.setText((Html.fromHtml(link)));
                     viewHolder.self_text.setMovementMethod(LinkMovementMethod.getInstance());
                     viewHolder.self_text.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Log.e(TAG, "Self text clicked");
+                            FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+                            Bundle params = new Bundle();
+                            params.putString("GoToTwitterButton", link);
+                            firebaseAnalytics.logEvent("linkTapped", params);
                             sendEngagementData(DIRECT_LINK_TAP);
                         }
                     });
@@ -277,7 +281,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     @Override
                     public void onClick(View view) {
                         sendEngagementData(SHARE_BUTTON_TAP);
-                        initShareButton(link + " via LeaugePulse", "LeaguePulse");
+                        initShareButton(link + " via LeaguePulse", "LeaguePulse");
                     }
                 });
             } else if (viewHolder1.getItemViewType() == VIEW_TYPE_TWITTER) {
@@ -330,7 +334,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     @Override
                     public void onClick(View view) {
                         sendEngagementData(SHARE_BUTTON_TAP);
-                        initShareButton(link + " via LeaugePulse", "LeaguePulse");
+                        initShareButton(link + " via LeaguePulse", "LeaguePulse");
                     }
                 });
             } else {
@@ -358,6 +362,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     @Override
                     public void onClick(View view) {
                         sendEngagementData(REDDIT_BUTTON_TAP);
+                        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(context);
+                        Bundle params = new Bundle();
+                        params.putString("GoToTwitterButton", link);
+                        firebaseAnalytics.logEvent("linkTapped", params);
                         Uri uri = Uri.parse(link); // missing 'http://' will cause crashed
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         context.startActivity(intent);
@@ -367,7 +375,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     @Override
                     public void onClick(View view) {
                         sendEngagementData(SHARE_BUTTON_TAP);
-                        initShareButton(link + " via LeaugePulse", "LeaguePulse");
+                        initShareButton(link + " via LeaguePulse", "LeaguePulse");
                     }
                 });
                 viewHolder.show_winner.setOnClickListener(new View.OnClickListener() {

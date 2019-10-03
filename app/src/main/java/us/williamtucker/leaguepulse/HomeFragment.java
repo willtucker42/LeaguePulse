@@ -642,8 +642,11 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             media_type, profile_pic_url, "", "", "",
                             "", 0, 0));
                 } else {
-                    if (self_text.contains("---\n\n###MATCH 1:") && self_text.contains("postmatch.team")
-                            && (title.contains("LEC") || title.contains("LCS"))) {
+                    if ((self_text.contains("---\n\n###MATCH 1:")
+                            || self_text.contains("---\n\n###MATCH")
+                            || self_text.contains("---\n\n### MATCH"))
+                            && self_text.contains("postmatch.team")
+                            && (title.contains("LEC") || title.contains("LCS") || title.contains("World"))) {
                         Matcher matcher = Pattern.compile("---\n\n###(.*?)\n").matcher(self_text);
                         Matcher winner_line_match = Pattern.compile("Winner:(.*?)m]").matcher(self_text);
                         Matcher matcher2 = Pattern.compile("/ (.*?) /").matcher(title);
@@ -724,7 +727,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 return 0;
             }
         } else if (week_region != null && week_region.contains("LCS")) {
-            if (team1.equals("Cloud9")) {
+            if (team1.contains("Cloud")) {
                 return R.drawable.c9_logo2_resize;
             } else if (team1.equals("Counter Logic Gaming")) {
                 return R.drawable.clg_logo_resize;
@@ -747,9 +750,60 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             } else {
                 return 0;
             }
+        } else if (week_region != null && week_region.contains("World")) {
+            if (team1.contains("Cloud")) {
+                return R.drawable.c9_logo2_resize;
+            } else if (team1.contains("Telecom")) {
+                return R.drawable.skt_logo_2;
+            } else if (team1.contains("Liquid")) {
+                return R.drawable.tl_logo_2;
+            } else if (team1.contains("G2")) {
+                return R.drawable.g2_logo_resize;
+            } else if (team1.contains("Fnatic")) {
+                return R.drawable.fnatic_logo;
+            } else if (team1.contains("Splyce")) {
+                return R.drawable.splyce_logo_resize;
+            } else if (team1.contains("Griffin")) {
+                return R.drawable.griffin_logo_2;
+            } else if (team1.contains("DAMWON")) {
+                return R.drawable.damwon_logo;
+            } else if (team1.contains("J Team")) {
+                return R.drawable.jteam_logo;
+            } else if (team1.contains("ahq")) {
+                return R.drawable.ahq_logo2;
+            } else if (team1.contains("Hong Kong")) {
+                return R.drawable.hka_logo2;
+            } else if (team1.contains("FunPlus")) {
+                return R.drawable.fpx_logo2;
+            } else if (team1.contains("Royal")) {
+                return R.drawable.rng_logo;
+            } else if (team1.contains("Invictus")) {
+                return R.drawable.ig_logo2;
+            } else if (team1.contains("Gigabyte")) {
+                return R.drawable.gam_logo2;
+            } else if (team1.contains("Lowkey")) {
+                return R.drawable.lowkey_logo;
+            } else if (team1.contains("Flamengo")) {
+                return R.drawable.flamengo_logo;
+            } else if (team1.contains("Unicorn")) {
+                return R.drawable.uol_logo2;
+            } else if (team1.contains("DetonatioN")) {
+                return R.drawable.dfm_logo2;
+            } else if (team1.contains("Isurus")) {
+                return R.drawable.isurus_logo2;
+            } else if (team1.contains("Mammoth")) {
+                return R.drawable.mammoth_logo2;
+            } else if (team1.contains("MEGA")) {
+                return R.drawable.mega_logo2;
+            } else if (team1.contains("Royal Youth")) {
+                return R.drawable.royal_youth_logo2;
+            } else if (team1.contains("Clutch")) {
+                return R.drawable.cg_logo_resize;
+            }
         } else {
             return 0;
         }
+        return 0;
     }
 
 }
