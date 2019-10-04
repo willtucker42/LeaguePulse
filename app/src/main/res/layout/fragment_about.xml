@@ -14,7 +14,7 @@
         android:textSize="30sp"
         android:fontFamily="@font/titilliumregular"
         android:textAlignment="center"
-        android:text="Leage Pulse Version 1.0.0"/>
+        android:text="Leage Pulse Version 1.1.2"/>
 
     <TextView
         android:id="@+id/about_text"
@@ -45,7 +45,7 @@
         android:layout_below="@id/divider"
         android:layout_marginTop="15dp"
         android:fontFamily="@font/titilliumregular"
-        android:text="Coming soon:\nYoutube Trending Content \nTwitch Trending Content\n Ability to comment on Reddit posts from app \nAbility to reply to Tweets from app \nAbility to filter trending list\n Track more subreddits and Twitter accounts\n Night Mode"
+        android:text="Coming soon:\nYoutube Trending Content \nTwitch Trending Content \n Track more subreddits and Twitter accounts"
         android:textAlignment="center"
         android:textColor="#5c5c5c"
         android:textSize="18.5sp" />

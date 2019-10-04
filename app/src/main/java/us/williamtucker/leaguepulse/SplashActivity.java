@@ -346,7 +346,7 @@ public class SplashActivity extends AppCompatActivity {
                 return R.drawable.hka_logo2;
             } else if (team1.contains("FunPlus")) {
                 return R.drawable.fpx_logo2;
-            } else if (team1.contains("Royal")) {
+            } else if (team1.contains("Royal N")) {
                 return R.drawable.rng_logo;
             } else if (team1.contains("Invictus")) {
                 return R.drawable.ig_logo2;
@@ -366,7 +366,7 @@ public class SplashActivity extends AppCompatActivity {
                 return R.drawable.mammoth_logo2;
             } else if (team1.contains("MEGA")) {
                 return R.drawable.mega_logo2;
-            } else if (team1.contains("Royal Youth")) {
+            } else if (team1.contains("Royal Y")) {
                 return R.drawable.royal_youth_logo2;
             } else if (team1.contains("Clutch")) {
                 return R.drawable.cg_logo_resize;
