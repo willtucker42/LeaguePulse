@@ -73,6 +73,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final int TWITTER_BUTTON_TAP = 2;
     private final int OPEN_PHOTO_TAP = 3;
     private final int SHARE_BUTTON_TAP = 4;
+    private final int YOUTUBE_THUMBNAIL_TAP = 5;
     /*private ArrayList<String> post_titles;
     private ArrayList<String> self_texts;
     private ArrayList<String> authors;
@@ -139,6 +140,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         case SHARE_BUTTON_TAP:
                             engagement.increment("share_button_taps");
                             break;
+                        case YOUTUBE_THUMBNAIL_TAP:
+                            engagement.increment("thumbnail_taps");
                         default:
                             Log.e(TAG, "sendEngagementData Error. int type: " + type);
                     }
@@ -225,13 +228,48 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     viewHolder.self_text.setTextColor(Color.parseColor("#515050"));
                     viewHolder.date_text.setTextColor(Color.parseColor("#515050"));
                 }
-                String self_text = currentItem.getmSelf_text();
-                //viewHolder.author.setText(authors.get(position));
-                // System.out.println("Clickable link? " + clickable_link.get(viewHolder.getAdapterPosition()));
+                viewHolder.thumbnail_image.setVisibility(View.GONE);
+                final String self_text = currentItem.getmSelf_text();
                 if (currentItem.getmClickable_link().equals("yes")) {
                     //if there is a clickable link set the textview to be clickable
-                    if (self_text.contains("youtube.com")) {
-                        System.out.println("Reddit link is a youtube link");
+                    if (self_text.contains("youtube.com") ) {
+                        try {
+                            Picasso.get().load(getThumbnailUrl(self_text, 1))
+                                    .placeholder(R.drawable.placeholder2)
+                                    .into(viewHolder.thumbnail_image);
+                            viewHolder.thumbnail_image.setVisibility(View.VISIBLE);
+                            viewHolder.thumbnail_image.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    sendEngagementData(YOUTUBE_THUMBNAIL_TAP);
+                                    Uri uri = Uri.parse(self_text); // missing 'http://' will cause crashed
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    context.startActivity(intent);
+                                }
+                            });
+                        }catch(Exception e){
+                            Log.e(TAG, "Error setting youtube thumbnail image 1");
+                            viewHolder.thumbnail_image.setVisibility(View.GONE);
+                        }
+                    }else if(self_text.contains("youtu.be")){
+                        try {
+                            Picasso.get().load(getThumbnailUrl(self_text, 0))
+                                    .placeholder(R.drawable.placeholder2)
+                                    .into(viewHolder.thumbnail_image);
+                            viewHolder.thumbnail_image.setVisibility(View.VISIBLE);
+                            viewHolder.thumbnail_image.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    sendEngagementData(YOUTUBE_THUMBNAIL_TAP);
+                                    Uri uri = Uri.parse(self_text); // missing 'http://' will cause crashed
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    context.startActivity(intent);
+                                }
+                            });
+                        }catch(Exception e){
+                            Log.e(TAG, "Error setting youtube thumbnail 2");
+                            viewHolder.thumbnail_image.setVisibility(View.GONE);
+                        }
                     }
                     viewHolder.self_text.setClickable(true);
                     final String link = "<a href='" + self_text + "'>" + self_text + " </a>";
@@ -407,7 +445,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
         // Log.i(TAG, "bindView time: " + (System.currentTimeMillis() - startTime));
     }
-
+    private String getThumbnailUrl(String self_text, int type) {
+        String vid_id;
+        if (type == 0) {
+            if (self_text.length() == 28) {
+                vid_id = self_text.substring(self_text.lastIndexOf("/") + 1);
+                return "https://img.youtube.com/vi/" + vid_id + "/hqdefault.jpg";
+            } else {
+                Log.e("SplashActivity", "youtu.be url is not 28 characters it is "
+                        + self_text.length());
+            }
+        } else if (type == 1) {
+            if (self_text.length() == 43) {
+                vid_id = self_text.substring(self_text.lastIndexOf("=") + 1);
+                return "https://img.youtube.com/vi/" + vid_id + "/hqdefault.jpg";
+            } else {
+                Log.e("SplashActivity", "youtube.com url is not 43 characters it is "
+                        + self_text.length());
+            }
+        } else {
+            Log.e("SplashActivity", "Unknown error in getThumbnailurl");
+        }
+        return null;
+    }
     private void setMedia(String media_type, final String media_url, TwitterViewHolder viewHolder,
                           RecyclerItem currentItem, final String twitter_name) {
         SimpleExoPlayer exoPlayer;
@@ -512,11 +572,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         // TextView trending_level;
         Button goto_reddit_button;
         CardView parent_layout;
+        ImageView thumbnail_image;
         AppCompatImageButton reddit_share_button;
 
         RedditViewHolder(@NonNull View itemView) {
             super(itemView);
             //trending_level = itemView.findViewById(R.id.cv_trending_level);
+            thumbnail_image = itemView.findViewById(R.id.rcv_thumbnail_image);
             reddit_share_button = itemView.findViewById(R.id.reddit_share_button);
             date_text = itemView.findViewById(R.id.cv_time_posted_text);
             self_text = itemView.findViewById(R.id.cv_self_text);

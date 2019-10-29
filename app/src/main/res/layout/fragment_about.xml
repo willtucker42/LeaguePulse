@@ -14,7 +14,7 @@
         android:textSize="30sp"
         android:fontFamily="@font/titilliumregular"
         android:textAlignment="center"
-        android:text="Leage Pulse Version 1.1.2"/>
+        android:text="League Pulse Version 1.1.3"/>
 
     <TextView
         android:id="@+id/about_text"

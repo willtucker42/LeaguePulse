@@ -23,7 +23,7 @@ public class RecyclerItem {
                         String clickable_link, String permalink, String twitter_handle,
                         String twitter_name, String twitter_media_url, String media_type,
                         String user_profile_pic_url, String team1, String team2, String winner_line,
-                        String week_region, int team1_logo,int team2_logo){
+                        String week_region, int team1_logo, int team2_logo){
         mPost_title = post_title;
         mSelf_text = self_text;
         mDate = date;
@@ -40,7 +40,7 @@ public class RecyclerItem {
         mWinner_line = winner_line;
         mWeek_region = week_region;
         mTeam1_logo = team1_logo;
-        mTeam2_logo = team2_logo;
+        mTeam2_logo = team2_logo;;
     }
     public int getmTeam1_logo() {
         return mTeam1_logo;

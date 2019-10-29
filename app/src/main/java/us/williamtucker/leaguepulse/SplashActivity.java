@@ -67,8 +67,8 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (sharedPreferences.getString("twitter_alert_option", null) == null) {
             System.out.println("its adding...");
-            editor.putString("twitter_alert_option", "all");
-            editor.putString("reddit_alert_option", "all");
+            editor.putString("twitter_alert_option", "top");
+            editor.putString("reddit_alert_option", "top");
             editor.putBoolean("receive_twitter_alerts", true);
             editor.putBoolean("receive_reddit_alerts", true);
             editor.putBoolean("receive_match_alerts", true);
@@ -156,6 +156,7 @@ public class SplashActivity extends AppCompatActivity {
             System.out.println("Posts size: " + posts.size());
             for (Post post : posts) {
                 String self_text = post.getSelf_text();
+                String thumbnail_url = null;
                 Date date = new Date(post.getCreated_utc() * 1000L);
                 String media_type = post.getMedia_type();
                 String score, team1 = null, team2 = null, winner_line = null,
@@ -178,9 +179,10 @@ public class SplashActivity extends AppCompatActivity {
                             media_type, profile_pic_url, "", "", "",
                             "", 0, 0));
                 } else {
-                    if ((self_text.contains("---\n\n###MATCH 1:") || self_text.contains("---\n\n###MATCH") || self_text.contains("---\n\n### MATCH"))
+                    if ((self_text.contains("---\n\n###Match") || self_text.contains("---\n\n###MATCH") || self_text.contains("---\n\n### MATCH"))
                             && self_text.contains("postmatch.team")
-                            && (title.contains("LEC") || title.contains("LCS") || title.contains("World"))) {
+                            && (title.contains("LEC") || title.contains("LCS") || title.contains("World"))
+                            && !self_text.contains("tbd")) {
                         Matcher matcher = Pattern.compile("---\n\n###(.*?)\n").matcher(self_text);
                         Matcher winner_line_match = Pattern.compile("Winner:(.*?)m]").matcher(self_text);
                         Matcher matcher2 = Pattern.compile("/ (.*?) /").matcher(title);
@@ -193,8 +195,9 @@ public class SplashActivity extends AppCompatActivity {
                                 score = score.substring(0, score.indexOf("(") + 1);
                             }
                             score = score.replaceAll("[()\\[\\]{}]", "");
+                            System.out.println("SCORE: " + score);
                             //score_line = score;
-                            System.out.println(score.trim());
+                            //System.out.println(score.trim());
                             team2 = score.substring(score.indexOf("-") + 3).trim();
                             if (!team2.contains("G2") && score.contains("G2")) {
                                 team1 = "G2 Esports";
@@ -204,6 +207,7 @@ public class SplashActivity extends AppCompatActivity {
                                 team1 = "Cloud9";
                             } else {
                                 team1 = score.split("[0-9]")[0].trim();
+                                Log.i(TAG, "Team1: " + team1);
                             }
                             /*if (winner_line_match.find()) {
                                 winner_line = "Winner: " + winner_line_match.group(1).replace("*", "") + " Minutes";
@@ -223,6 +227,11 @@ public class SplashActivity extends AppCompatActivity {
                             }
                             winner_line = Objects.requireNonNull(winner_line).replace("  ", "");*/
                             winner_line = "Winner: " + getWinner(score.trim());
+                            System.out.println("Winner line---- " + winner_line);
+                            if (winner_line.contains("null")) {
+                                Log.e(TAG, "Winner is null or empty");
+                                team1 = null;
+                            }
                               /*System.out.println("Team1: " + team1);
                             System.out.println("Team2: " + team2);
                             System.out.println("Winner line: " + winner_line);*/
@@ -231,10 +240,10 @@ public class SplashActivity extends AppCompatActivity {
                         }
 
                         //System.out.println(self_text.substring(self_text.indexOf("---\n\n###")+1));
+
                     } else {
                         self_text = self_text.replace("&amp;", "&");
                         title = title.replace("&amp;", "&");
-                        //System.out.println(title + " Doesn't");
                     }
 
                     recyclerItemArrayList.add(new RecyclerItem(post.getTitle(), self_text,
@@ -258,7 +267,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private String getWinner(String score_line) {
-        System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n\n Socre line: " + score_line + "\n\n");
+        System.out.println("----------------------------------------------------------------------- Score line: " + score_line + "\n\n");
         String winning_team = null;
         if (score_line.contains("1-0")) {
             winning_team = score_line.substring(0, score_line.indexOf("1"));
@@ -271,6 +280,9 @@ public class SplashActivity extends AppCompatActivity {
         }
         return winning_team;
     }
+
+
+
 
     private int getTeam1Logo(String team1, String week_region) {
         if (week_region != null && week_region.contains("LEC")) {
@@ -350,7 +362,7 @@ public class SplashActivity extends AppCompatActivity {
                 return R.drawable.rng_logo;
             } else if (team1.contains("Invictus")) {
                 return R.drawable.ig_logo2;
-            } else if (team1.contains("Gigabyte")) {
+            } else if (team1.contains("GAM") || team1.contains("Gigabyte")) {
                 return R.drawable.gam_logo2;
             } else if (team1.contains("Lowkey")) {
                 return R.drawable.lowkey_logo;

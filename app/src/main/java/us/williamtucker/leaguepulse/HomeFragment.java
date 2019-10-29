@@ -377,6 +377,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             System.out.println("Posts size: " + posts.size());
             for (Post post : posts) {
                 String self_text = post.getSelf_text();
+                String thumbnail_url = null;
                 Date date = new Date(post.getCreated_utc() * 1000L);
                 String media_type = post.getMedia_type();
                 String score, team1 = null, team2 = null, winner_line = null,
@@ -496,6 +497,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             System.out.println("Posts size: " + posts.size());
             for (Post post : posts) {
                 String self_text = post.getSelf_text();
+                String thumbnail_url = null;
                 Date date = new Date(post.getCreated_utc() * 1000L);
                 String media_type = post.getMedia_type();
                 String score, team1 = null, team2 = null, winner_line = null,
@@ -620,6 +622,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             System.out.println("Posts size: " + posts.size());
             for (Post post : posts) {
                 String self_text = post.getSelf_text();
+                String thumbnail_url = null;
                 Date date = new Date(post.getCreated_utc() * 1000L);
                 String media_type = post.getMedia_type();
                 String score, team1 = null, team2 = null, winner_line = null,
@@ -642,11 +645,12 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             media_type, profile_pic_url, "", "", "",
                             "", 0, 0));
                 } else {
-                    if ((self_text.contains("---\n\n###MATCH 1:")
+                    if ((self_text.contains("---\n\n###Match:")
                             || self_text.contains("---\n\n###MATCH")
                             || self_text.contains("---\n\n### MATCH"))
                             && self_text.contains("postmatch.team")
-                            && (title.contains("LEC") || title.contains("LCS") || title.contains("World"))) {
+                            && (title.contains("LEC") || title.contains("LCS") || title.contains("World"))
+                            && !self_text.contains("tbd")) {
                         Matcher matcher = Pattern.compile("---\n\n###(.*?)\n").matcher(self_text);
                         Matcher winner_line_match = Pattern.compile("Winner:(.*?)m]").matcher(self_text);
                         Matcher matcher2 = Pattern.compile("/ (.*?) /").matcher(title);
@@ -679,7 +683,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                         //System.out.println(self_text.substring(self_text.indexOf("---\n\n###")+1));
                     } else {
-                        //System.out.println("Doesn't");
+                        self_text = self_text.replace("&amp;", "&");
+                        title = title.replace("&amp;", "&");
                     }
 
                     recyclerItemArrayList.add(new RecyclerItem(post.getTitle(), self_text,
@@ -700,6 +705,8 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         }
 
     }
+
+
 
     private int getTeamLogo(String team1, String week_region) {
         if (week_region != null && week_region.contains("LEC")) {
@@ -779,7 +786,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 return R.drawable.rng_logo;
             } else if (team1.contains("Invictus")) {
                 return R.drawable.ig_logo2;
-            } else if (team1.contains("Gigabyte")) {
+            } else if (team1.contains("GAM") || team1.contains("Gigabyte")) {
                 return R.drawable.gam_logo2;
             } else if (team1.contains("Lowkey")) {
                 return R.drawable.lowkey_logo;
