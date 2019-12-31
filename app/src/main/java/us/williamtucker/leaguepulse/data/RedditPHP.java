@@ -7,6 +7,6 @@ import retrofit2.http.GET;
 import us.williamtucker.leaguepulse.data.redditdata.datamodel.Post;
 
 public interface RedditPHP {
-    @GET("get-onlytrendingreddit-json.php")
+    @GET("x.php")
     Call<List<Post>> getData();
 }
