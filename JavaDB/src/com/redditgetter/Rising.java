@@ -18,7 +18,7 @@ public class Rising {
 	final static String RDS_PORT = "3306";
 	final static String RDS_DB_NAME = "reddit-database";
 	final static String RDS_USERNAME = "willtucker42";
-	final static String RDS_PASSWORD = "Createaccou1090";
+	final static String RDS_PASSWORD = "xxxxxx";
 	private Time time = new Time();
 	private long currentUnixTime = System.currentTimeMillis() / 1000L;
 
