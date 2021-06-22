@@ -10,7 +10,7 @@ public class RedditHourlyAverages {
 	final static String RDS_PORT = "3306";
 	final static String RDS_DB_NAME = "reddit-database";
 	final static String RDS_USERNAME = "willtucker42";
-	final static String RDS_PASSWORD = "Createaccou1090";
+	final static String RDS_PASSWORD = "xxxxxxxxxxxxxx";
     private double avg_0_1 = 0, avg_2_4 = 0, avg_5_7 = 0, avg_8_10 = 0, avg_11_13 = 0, avg_14_16 = 0,
             avg_17_19 = 0, avg_20_23 = 0;
 
