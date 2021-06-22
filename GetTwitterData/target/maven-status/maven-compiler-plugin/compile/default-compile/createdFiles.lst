@@ -1,0 +1,6 @@
+main\LambdaMethodHandler.class
+data\TwitterUserObject.class
+firebase\FirebaseSendMessage.class
+main\Main.class
+Twitter\GatherTwitterData.class
+Twitter\TwitterUtils.class
